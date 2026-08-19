@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Satori Daily — Mockup</title>
+<style>
+  :root{
+    --navy-0:#08080b; --navy-1:#100f14; --navy-2:#18171f; --line:#2a2733;
+    --gold:#a6d93f; --gold-soft:#8fc22f; --sage:#8ea38f;
+    --orange:#e8823c; --orange-soft:#d9702c; --energy:#c21f43;
+    --cream:#f5f2ea; --muted:#a7a2b0; --muted-2:#726d7d; --ok:#a6d93f;
+  }
+  *{box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent;}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:radial-gradient(1100px 620px at 50% 8%, rgba(194,31,67,.30) 0%, transparent 58%),radial-gradient(800px 500px at 85% 108%, rgba(150,22,66,.22) 0%, transparent 55%),var(--navy-0);
+    min-height:100vh; color:var(--cream); display:flex; flex-direction:column; align-items:center; gap:20px; padding:40px 16px 60px;}
+  .stage-label{text-align:center; color:var(--muted); font-size:13px; letter-spacing:.14em; text-transform:uppercase;} .stage-label b{color:var(--gold); font-weight:600;}
+  .phone{width:390px; max-width:100%; height:800px; position:relative; background:var(--navy-0); border-radius:44px; border:1px solid var(--line); box-shadow:0 40px 90px -30px rgba(0,0,0,.8), inset 0 1px 0 rgba(255,255,255,.04); overflow:hidden;}
+  .notch{position:absolute; top:0; left:50%; transform:translateX(-50%); width:150px; height:26px; background:var(--navy-0); border-radius:0 0 18px 18px; z-index:40;}
+  .layer{position:absolute; inset:0; display:none;} .layer.active{display:block; animation:fade .35s ease both;}
+  @keyframes fade{from{opacity:0;}to{opacity:1;}}
+  .scroll{overflow-y:auto; height:100%; padding:52px 22px 96px; scrollbar-width:none;} .scroll::-webkit-scrollbar{display:none;}
+  .word{font-size:15px; letter-spacing:.42em; font-weight:600; color:var(--cream); text-indent:.42em; text-shadow:0 1px 8px rgba(0,0,0,.5); cursor:pointer;} .word span{color:var(--gold);}
+  .streak{display:flex; align-items:center; gap:6px; background:rgba(8,8,11,.55); backdrop-filter:blur(8px); border:1px solid rgba(166,217,63,.3); color:var(--gold); padding:6px 11px; border-radius:999px; font-size:13px; font-weight:600;}
+  .chip{font-size:11px; letter-spacing:.06em; color:var(--cream); background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.16); padding:5px 10px; border-radius:999px; backdrop-filter:blur(6px);}
+  .mastery{display:inline-flex; align-items:center; gap:7px; font-size:11px; color:var(--gold);}
+  .mbar{width:60px; height:5px; border-radius:3px; background:rgba(255,255,255,.15); overflow:hidden;} .mbar i{display:block; height:100%; background:linear-gradient(90deg,var(--gold),var(--orange));}
+  .eyebrow{font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:var(--gold); margin-bottom:8px; font-weight:600; text-shadow:0 1px 6px rgba(0,0,0,.6);}
+  .move-name{font-size:27px; font-weight:800; letter-spacing:-.015em; line-height:1.05; margin-bottom:9px; text-shadow:0 2px 14px rgba(0,0,0,.6);}
+  .chips{display:flex; gap:7px; flex-wrap:wrap; margin-bottom:13px; align-items:center;}
+  .cta{width:100%; border:0; cursor:pointer; padding:16px; border-radius:999px; font-size:14px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:#fff; background:linear-gradient(180deg,var(--orange),var(--orange-soft)); transition:transform .15s, filter .15s; box-shadow:0 12px 32px -8px rgba(232,130,60,.55);}
+  .cta:hover{filter:brightness(1.05);} .cta:active{transform:scale(.985);}
+  .cta.lime{background:linear-gradient(180deg,var(--gold),var(--gold-soft)); color:var(--navy-0); box-shadow:0 12px 32px -8px rgba(166,217,63,.5);}
+
+  /* Cover */
+  #coverLayer{background:radial-gradient(720px 520px at 50% 32%, rgba(194,31,67,.40), transparent 62%), var(--navy-0);}
+  .cover-inner{position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:40px 34px;}
+  .logo-ring{margin-bottom:26px; filter:drop-shadow(0 0 22px rgba(166,217,63,.45));}
+  .cover-word{font-size:33px; font-weight:800; letter-spacing:.14em; text-indent:.14em; margin-bottom:16px;} .cover-word span{color:var(--gold);}
+  .cover-tag{font-size:17px; color:#fff; font-weight:600; margin-bottom:12px; line-height:1.3;}
+  .cover-sub{font-size:13.5px; color:var(--muted); line-height:1.55; max-width:290px; margin-bottom:34px;}
+  .cover-btn{border:0; cursor:pointer; padding:16px 30px; border-radius:999px; font-size:14px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--navy-0); background:linear-gradient(180deg,var(--gold),var(--gold-soft)); box-shadow:0 14px 34px -8px rgba(166,217,63,.5); transition:transform .15s, filter .15s; margin-bottom:20px;}
+  .cover-btn:hover{filter:brightness(1.06);} .cover-btn:active{transform:scale(.97);} .cover-streak{font-size:12px; color:var(--muted-2); letter-spacing:.04em;}
+
+  /* Today — promo feed */
+  #todayLayer{background:var(--navy-0);}
+  .feed{display:flex; height:100%; overflow-x:auto; overflow-y:hidden; scroll-snap-type:x mandatory; scrollbar-width:none;} .feed::-webkit-scrollbar{display:none;}
+  .slide{position:relative; flex:0 0 100%; width:100%; height:100%; scroll-snap-align:center; overflow:hidden; background:var(--navy-0); cursor:pointer;}
+  .s-video,.s-poster{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;}
+  .s-video, #pracVideo, .dhero video, .dp-video video, .dcard video{object-position:center top;}
+  .p-scrim-top{position:absolute; top:0; left:0; right:0; height:150px; z-index:1; pointer-events:none; background:linear-gradient(180deg,rgba(8,8,11,.85),transparent);}
+  .p-scrim-bot{position:absolute; bottom:0; left:0; right:0; height:360px; z-index:1; pointer-events:none; background:linear-gradient(0deg,rgba(8,8,11,.95) 4%,rgba(8,8,11,.65) 34%,transparent 100%);}
+  .s-promo{position:absolute; left:0; right:0; bottom:96px; z-index:4; padding:0 22px;}
+  .s-tag{font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--gold); font-weight:700; margin-bottom:8px;}
+  .begin-pill{display:inline-flex; align-items:center; gap:7px; margin-top:6px; background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.25); backdrop-filter:blur(8px); color:#fff; font-size:12.5px; font-weight:600; padding:9px 15px; border-radius:999px;}
+  .s-note{position:absolute; top:46%; left:0; right:0; text-align:center; font-size:11px; color:var(--muted); z-index:2;}
+  .progressbar{position:absolute; top:0; left:0; right:0; height:3px; z-index:5; display:flex; gap:4px; padding:38px 20px 0;}
+  .progressbar i{flex:1; height:3px; border-radius:2px; background:rgba(255,255,255,.25); overflow:hidden;} .progressbar i b{display:block; height:100%; width:0; background:var(--gold);}
+  .progressbar i.done b{width:100%;} .progressbar i.on b{animation:fill var(--pd,12s) linear forwards;}
+  @keyframes fill{from{width:0;}to{width:100%;}}
+
+  /* locked promo slide */
+  .slide.locked{display:flex; align-items:center; justify-content:center;}
+  .lock-scrim{position:absolute; inset:0; background:linear-gradient(0deg,rgba(8,8,11,.9) 4%,rgba(8,8,11,.5) 45%,rgba(8,8,11,.35)); z-index:1;}
+  .lock-inner{position:relative; z-index:2; text-align:center; padding:30px;}
+  .lock-badge{display:inline-block; font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:var(--orange); border:1px solid rgba(232,130,60,.5); border-radius:6px; padding:4px 10px; margin-bottom:18px; font-weight:700;}
+  .lock-ic{font-size:34px; margin:8px 0 20px; opacity:.9;} .lock-inner .move-name{font-size:26px; margin-bottom:12px;} .lock-inner .chips{justify-content:center; margin-bottom:6px;} .lock-inner .cta{max-width:260px; margin:14px auto 12px;} .lock-note{font-size:12px; color:var(--muted-2);}
+
+  .feed-top{position:absolute; top:0; left:0; right:0; z-index:20; display:flex; align-items:center; justify-content:space-between; padding:52px 22px 0; pointer-events:none;}
+  .feed-top .word,.feed-top .streak{pointer-events:auto;}
+  .arrow{position:absolute; top:46%; transform:translateY(-50%); z-index:18; width:38px; height:38px; border-radius:50%; background:rgba(8,8,11,.5); backdrop-filter:blur(8px); border:1px solid var(--line); color:var(--cream); cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:18px;}
+  .arrow.left{left:12px;} .arrow.right{right:12px;} .arrow:hover{background:rgba(8,8,11,.75);}
+  .dots{position:absolute; left:0; right:0; bottom:82px; z-index:6; display:flex; gap:6px; justify-content:center; pointer-events:none;}
+  .dots i{width:6px; height:6px; border-radius:50%; background:rgba(255,255,255,.3);} .dots i.on{background:var(--gold); width:18px; border-radius:3px;}
+
+  /* Practice overlay (selected) */
+  .practice{position:absolute; inset:0; z-index:45; display:none; overflow:hidden; background:var(--navy-0);}
+  .practice.show{display:block; animation:fade .3s ease both;}
+  #pracVideo{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;}
+  .prac-top{position:absolute; top:0; left:0; right:0; z-index:6; display:flex; align-items:center; justify-content:space-between; padding:46px 20px 0; transition:opacity .3s;}
+  .p-x{display:inline-flex; align-items:center; gap:5px; background:rgba(8,8,11,.55); backdrop-filter:blur(8px); border:1px solid var(--line); color:var(--cream); font-size:13px; padding:7px 13px; border-radius:999px; cursor:pointer;}
+  .center-play{position:absolute; top:42%; left:50%; transform:translate(-50%,-50%); z-index:5; width:74px; height:74px; border-radius:50%; background:#fff; border:3px solid var(--gold); display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 10px 40px rgba(0,0,0,.5),0 0 30px rgba(166,217,63,.35); transition:opacity .3s, transform .2s;}
+  .center-play:hover{transform:translate(-50%,-50%) scale(1.06);} .center-play svg{margin-left:5px;} .center-play.hidden{opacity:0; pointer-events:none;}
+  .prac-bottom{position:absolute; left:0; right:0; bottom:26px; z-index:6; padding:0 22px; display:flex; flex-direction:column; gap:10px; transition:opacity .3s;}
+  .info-btn{align-self:flex-start; background:rgba(8,8,11,.5); backdrop-filter:blur(8px); border:1px solid var(--line); color:var(--cream); font-size:12.5px; padding:8px 14px; border-radius:999px; cursor:pointer;}
+  .practice.focus .prac-top, .practice.focus .prac-bottom{opacity:0; pointer-events:none;}
+
+  .info-sheet{position:absolute; left:0; right:0; bottom:0; z-index:8; background:linear-gradient(0deg,rgba(8,8,11,.99) 60%,rgba(8,8,11,.75)); backdrop-filter:blur(6px); border-top:1px solid var(--line); border-radius:24px 24px 0 0; padding:24px 22px 26px; transform:translateY(100%); transition:transform .35s cubic-bezier(.2,.9,.3,1);}
+  .info-sheet.show{transform:translateY(0);}
+  .sheet-x{position:absolute; top:16px; right:18px; background:rgba(255,255,255,.08); border:1px solid var(--line); color:var(--cream); width:30px; height:30px; border-radius:50%; cursor:pointer; font-size:13px;}
+  .i-desc{font-size:13.5px; line-height:1.55; color:#cfccd6; margin-bottom:16px;}
+  .cues{list-style:none; display:flex; flex-direction:column; gap:9px; margin-bottom:18px; padding:15px 14px; background:rgba(24,23,31,.7); border:1px solid var(--line); border-radius:14px;}
+  .cues li{display:flex; gap:9px; font-size:13px; line-height:1.45; color:#cfccd6;} .cues li b{color:var(--gold); font-weight:600;}
+
+  /* done */
+  .done{position:absolute; inset:0; z-index:12; background:rgba(8,9,13,.94); backdrop-filter:blur(14px); display:none; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:34px;}
+  .done.show{display:flex; animation:fade .4s ease both;}
+  .seal{width:84px; height:84px; border-radius:50%; margin-bottom:18px; background:radial-gradient(circle at 50% 40%, rgba(166,217,63,.4), rgba(166,217,63,.08)); border:1px solid rgba(166,217,63,.45); display:flex; align-items:center; justify-content:center; animation:pop .5s cubic-bezier(.2,1.3,.4,1) both;}
+  @keyframes pop{from{transform:scale(.4); opacity:0;}to{transform:scale(1); opacity:1;}}
+  .done h3{font-size:23px; font-weight:700; margin-bottom:8px;} .done p{color:var(--muted); font-size:13.5px; line-height:1.5; max-width:290px; margin-bottom:20px;}
+  .conf-q{font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--sage); margin-bottom:12px; font-weight:600;}
+  .conf-row{display:flex; gap:8px; margin-bottom:22px; flex-wrap:wrap; justify-content:center;}
+  .conf{cursor:pointer; padding:10px 14px; border-radius:12px; border:1px solid var(--line); background:var(--navy-2); color:var(--cream); font-size:12.5px; font-weight:600; transition:.15s;} .conf:hover{border-color:var(--gold); color:var(--gold);} .conf.sel{background:linear-gradient(180deg,var(--gold),var(--gold-soft)); color:var(--navy-0); border-color:transparent;}
+  .learn{display:inline-flex; align-items:center; gap:8px; background:linear-gradient(180deg,var(--orange),var(--orange-soft)); color:#fff; border:0; text-decoration:none; cursor:pointer; padding:13px 22px; border-radius:999px; font-size:13px; font-weight:700; margin-bottom:14px; box-shadow:0 10px 26px -8px rgba(232,130,60,.5);}
+  .again{background:none; border:1px solid var(--line); color:var(--muted); padding:11px 18px; border-radius:12px; font-size:12.5px; cursor:pointer;}
+
+  /* Library / Pillar shared */
+  .brand{display:flex; align-items:center; justify-content:space-between; margin-bottom:20px;}
+  .badge{background:rgba(166,217,63,.1); border:1px solid rgba(166,217,63,.28); color:var(--gold); padding:6px 11px; border-radius:999px; font-size:13px; font-weight:600;}
+  .h{font-size:22px; font-weight:700; margin-bottom:18px; letter-spacing:-.01em;}
+  .eyebrow2{font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:var(--sage); margin:18px 0 10px; font-weight:600;} .eyebrow2:first-child{margin-top:0;}
+  .pillars{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:6px;}
+  .pillar{border-radius:18px; padding:18px 15px; min-height:104px; display:flex; flex-direction:column; justify-content:space-between; cursor:pointer; border:1px solid var(--line); transition:transform .15s;} .pillar:active{transform:scale(.98);}
+  .pillar.med{background:linear-gradient(160deg,#2a1f3d,#181022);} .pillar.breath{background:linear-gradient(160deg,#1f3a34,#152420);} .pillar.qi{background:linear-gradient(160deg,#3a2a20,#231512);} .pillar.mind{background:linear-gradient(160deg,#3a3324,#231d14);}
+  .pillar .p-ic{font-size:20px;} .pillar .p-name{font-size:15px; font-weight:700;} .pillar .p-count{font-size:11px; color:var(--muted-2); margin-top:2px;}
+  .rowcard{display:flex; align-items:center; gap:13px; padding:11px; background:var(--navy-2); border:1px solid var(--line); border-radius:14px; margin-bottom:10px; cursor:pointer; transition:.15s;} .rowcard:active{transform:scale(.99);} .rowcard:hover{border-color:rgba(166,217,63,.35);}
+  .thumb{width:54px; height:54px; border-radius:11px; flex-shrink:0; display:flex; align-items:center; justify-content:center; color:#fff; font-size:19px;} .thumb.vid{background:linear-gradient(150deg,#3a2a20,#160f14);} .thumb.aud{background:linear-gradient(150deg,#2a1f3d,#160f14);}
+  .rowcard .r1{font-size:14px; font-weight:600; display:flex; align-items:center; gap:7px;} .rowcard .r2{font-size:12px; color:var(--muted-2); margin-top:2px;}
+  .lock{font-size:9px; letter-spacing:.08em; text-transform:uppercase; color:var(--orange); border:1px solid rgba(232,130,60,.4); border-radius:5px; padding:1px 5px;} .free{font-size:9px; letter-spacing:.08em; text-transform:uppercase; color:var(--gold); border:1px solid rgba(166,217,63,.4); border-radius:5px; padding:1px 5px;}
+  .rmini{width:30px; height:5px; border-radius:3px; background:rgba(255,255,255,.12); overflow:hidden; margin-left:auto; flex-shrink:0;} .rmini i{display:block; height:100%; background:linear-gradient(90deg,var(--gold),var(--orange));}
+  .back{display:inline-flex; align-items:center; gap:7px; color:var(--muted); font-size:13px; cursor:pointer; margin-bottom:16px; background:none; border:0;} .back:hover{color:var(--gold);}
+  .segrow{display:flex; gap:8px; margin-bottom:18px;} .seg{flex:1; text-align:center; padding:9px; border-radius:10px; border:1px solid var(--line); background:var(--navy-2); font-size:12.5px; font-weight:600; color:var(--muted); cursor:pointer;} .seg.on{background:rgba(166,217,63,.12); border-color:rgba(166,217,63,.4); color:var(--gold);}
+  .nowbar{position:absolute; left:14px; right:14px; bottom:88px; z-index:36; display:none; align-items:center; gap:11px; background:rgba(24,23,31,.94); backdrop-filter:blur(14px); border:1px solid var(--line); border-radius:14px; padding:10px 13px;} .nowbar.show{display:flex; animation:fade .3s ease both;}
+  .np-eq{display:flex; align-items:flex-end; gap:3px; height:18px; width:22px;} .np-eq span{flex:1; background:var(--gold); border-radius:2px; animation:bounce 1s ease-in-out infinite;} .np-eq span:nth-child(2){animation-delay:.2s;} .np-eq span:nth-child(3){animation-delay:.4s;}
+  @keyframes bounce{0%,100%{height:25%;}50%{height:92%;}}
+  .np1{font-size:12.5px; font-weight:600;} .np2{font-size:10.5px; color:var(--muted-2);} .np-x{margin-left:auto; color:var(--muted); cursor:pointer; font-size:16px; padding:0 4px;}
+  .bigstat{text-align:center; padding:14px 0 20px;} .bigstat .n{font-size:52px; font-weight:800; color:var(--gold); letter-spacing:-.02em; line-height:1;} .bigstat .l{font-size:13px; color:var(--muted); letter-spacing:.04em; margin-top:6px;}
+  .grid-cal{display:grid; grid-template-columns:repeat(7,1fr); gap:7px; margin:6px 0 24px;} .cell{aspect-ratio:1; border-radius:7px; background:var(--navy-2); border:1px solid var(--line);} .cell.on{background:linear-gradient(160deg,var(--gold),var(--gold-soft)); border-color:transparent;} .cell.today{outline:2px solid var(--orange); outline-offset:1px;}
+  .statline{display:flex; justify-content:space-between; padding:14px 2px; border-top:1px solid var(--line); font-size:14px;} .statline span:last-child{color:var(--gold); font-weight:600;}
+  .premium{position:absolute; inset:0; z-index:50; background:radial-gradient(700px 500px at 50% 12%, rgba(194,31,67,.34), transparent 60%), rgba(8,8,11,.98); display:none; overflow-y:auto; scrollbar-width:none;} .premium::-webkit-scrollbar{display:none;} .premium.show{display:block; animation:fade .35s ease both;}
+  .prem-close{position:absolute; top:46px; right:20px; z-index:2; background:rgba(255,255,255,.08); border:1px solid var(--line); color:var(--cream); width:34px; height:34px; border-radius:50%; cursor:pointer; font-size:15px;}
+  .prem-inner{padding:74px 30px 40px; text-align:center; min-height:100%;}
+  .prem-badge{font-size:11px; letter-spacing:.26em; color:var(--gold); font-weight:700; margin-bottom:14px;} .prem-inner h2{font-size:28px; font-weight:800; margin-bottom:12px; line-height:1.1;}
+  .price{font-size:15px; color:var(--muted); margin-bottom:6px;} .price b{font-size:38px; color:var(--cream); font-weight:800;} .prem-sub{font-size:13.5px; color:var(--muted); margin-bottom:26px;}
+  .feat{list-style:none; text-align:left; max-width:300px; margin:0 auto 26px; display:flex; flex-direction:column; gap:12px;} .feat li{font-size:13.5px; color:var(--cream); display:flex; gap:11px; align-items:flex-start; line-height:1.4;} .feat .ico{color:var(--gold); font-weight:700; flex-shrink:0;}
+  .cta.lime.wide{max-width:320px; margin:0 auto;}
+  .prem-note{font-size:11px; color:var(--muted-2); margin-top:12px;} .prem-or{font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted-2); margin:28px 0 16px;}
+  .dojo-link{display:inline-flex; align-items:center; gap:8px; text-decoration:none; color:#fff; font-size:13px; font-weight:700; background:linear-gradient(180deg,var(--orange),var(--orange-soft)); padding:13px 22px; border-radius:999px; box-shadow:0 10px 26px -8px rgba(232,130,60,.5);}
+  .prem-free{font-size:12px; color:var(--muted-2); line-height:1.5; max-width:300px; margin:26px auto 0;}
+  .nav{position:absolute; bottom:0; left:0; right:0; height:74px; background:rgba(8,8,11,.85); backdrop-filter:blur(16px); border-top:1px solid var(--line); display:flex; align-items:center; justify-content:space-around; padding-bottom:8px; z-index:30;}
+  .nav button{background:none; border:0; cursor:pointer; color:var(--muted-2); display:flex; flex-direction:column; align-items:center; gap:4px; font-size:10px; letter-spacing:.03em; padding:6px 10px;} .nav button.active{color:var(--gold);} .nav svg{width:22px; height:22px;}
+  .hint{max-width:440px; text-align:center; color:var(--muted-2); font-size:12px; line-height:1.6;} .hint b{color:var(--sage);}
+
+  /* ===== Device toggle ===== */
+  .devbar{display:flex; flex-direction:column; align-items:center; gap:12px;}
+  .devtoggle{display:inline-flex; background:var(--navy-1); border:1px solid var(--line); border-radius:999px; padding:4px;}
+  .devtoggle button{background:none; border:0; color:var(--muted); font-size:12.5px; font-weight:600; padding:8px 22px; border-radius:999px; cursor:pointer; letter-spacing:.03em;}
+  .devtoggle button.on{background:linear-gradient(180deg,var(--gold),var(--gold-soft)); color:var(--navy-0);}
+
+  /* ===== Desktop layout ===== */
+  #desktopStage{width:100%; display:flex; justify-content:center;}
+  .deskwin{width:1140px; max-width:100%; min-height:720px; display:flex; background:var(--navy-0); border:1px solid var(--line); border-radius:20px; overflow:visible; box-shadow:0 40px 90px -30px rgba(0,0,0,.8);}
+  .dside{width:232px; flex-shrink:0; background:var(--navy-1); border-right:1px solid var(--line); display:flex; flex-direction:column; padding:26px 18px; position:sticky; top:20px; align-self:flex-start; height:calc(100vh - 40px); min-height:660px; border-radius:20px 0 0 20px;}
+  .dlogo{font-size:16px; font-weight:800; letter-spacing:.22em; cursor:pointer; margin-bottom:34px; padding-left:6px; line-height:1.1;} .dlogo span{color:var(--gold);} .dlogo em{display:block; font-size:9.5px; letter-spacing:.34em; color:var(--muted-2); font-style:normal; margin-top:5px;}
+  .dnav{display:flex; flex-direction:column; gap:4px; flex:1;}
+  .dn{display:flex; align-items:center; background:none; border:0; color:var(--muted); font-size:14px; font-weight:600; padding:11px 14px; border-radius:11px; cursor:pointer; text-align:left;}
+  .dn:hover{background:rgba(255,255,255,.04); color:var(--cream);} .dn.on{background:rgba(166,217,63,.12); color:var(--gold);}
+  .dside-foot{display:flex; flex-direction:column; gap:12px;}
+  .dstreak{font-size:12.5px; color:var(--gold); font-weight:600; padding-left:6px;}
+  .dgo-prem{background:none; border:1px solid rgba(232,130,60,.4); color:var(--orange); font-weight:700; font-size:12.5px; padding:11px; border-radius:11px; cursor:pointer;}
+  .dmain{flex:1; position:relative; min-width:0;}
+  .dview{display:none; padding:34px 38px 44px;} .dview.on{display:block; animation:fade .35s ease both;}
+  .dhead{font-size:12px; letter-spacing:.2em; text-transform:uppercase; color:var(--gold); font-weight:700; margin-bottom:7px;}
+  .dtitle{font-size:29px; font-weight:800; letter-spacing:-.01em; margin-bottom:22px;}
+  .dhero{position:relative; height:392px; border-radius:20px; overflow:hidden; margin-bottom:30px; cursor:pointer;}
+  .dhero video,.dhero .dh-poster{position:absolute; inset:0; width:100%; height:100%; object-fit:cover;}
+  .dh-scrim{position:absolute; inset:0; background:linear-gradient(90deg,rgba(8,8,11,.9),rgba(8,8,11,.15) 72%), linear-gradient(0deg,rgba(8,8,11,.85),transparent 62%);}
+  .dh-body{position:absolute; left:34px; bottom:30px; right:34px; z-index:2;}
+  .dh-eye{font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--gold); font-weight:700; margin-bottom:9px;}
+  .dh-name{font-size:34px; font-weight:800; margin-bottom:10px; text-shadow:0 2px 14px rgba(0,0,0,.6);}
+  .dh-desc{font-size:14px; color:#d3d0da; max-width:430px; margin-bottom:18px; line-height:1.5;}
+  .dh-cta{display:inline-flex; align-items:center; gap:8px; background:linear-gradient(180deg,var(--gold),var(--gold-soft)); color:var(--navy-0); border:0; cursor:pointer; font-weight:700; font-size:13px; letter-spacing:.04em; text-transform:uppercase; padding:14px 26px; border-radius:999px;}
+  .dgrid{display:grid; grid-template-columns:repeat(4,1fr); gap:16px;}
+  .dcard{position:relative; height:218px; border-radius:16px; overflow:hidden; cursor:pointer; border:1px solid var(--line); transition:transform .15s, border-color .15s;}
+  .dcard:hover{transform:translateY(-3px); border-color:rgba(166,217,63,.4);}
+  .dc-scrim{position:absolute; inset:0; background:linear-gradient(0deg,rgba(8,8,11,.92),transparent 55%);}
+  .dc-top{position:absolute; top:10px; left:10px; right:10px; display:flex; justify-content:space-between; z-index:2;}
+  .dc-play{position:absolute; top:37%; left:50%; transform:translate(-50%,-50%); width:44px; height:44px; border-radius:50%; background:rgba(255,255,255,.9); border:2px solid var(--gold); display:flex; align-items:center; justify-content:center; z-index:2;} .dc-play svg{margin-left:2px;}
+  .dc-info{position:absolute; left:12px; right:12px; bottom:12px; z-index:2;}
+  .dc-name{font-size:14px; font-weight:700; margin-bottom:5px; line-height:1.15;} .dc-chips{font-size:10.5px; color:#c8c4d0; margin-bottom:7px;}
+  .dc-mbar{height:4px; border-radius:3px; background:rgba(255,255,255,.16); overflow:hidden;} .dc-mbar i{display:block; height:100%; background:linear-gradient(90deg,var(--gold),var(--orange));}
+  .dpillars{display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:30px;}
+  .dprac{position:fixed; inset:0; z-index:60; display:none;} .dprac.show{display:flex; animation:fade .3s ease both;}
+  .dp-video{position:relative; flex:1.5; background:#000; overflow:hidden;} .dp-video video{position:absolute; inset:0; width:100%; height:100%; object-fit:cover;}
+  .dp-cplay{position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:72px; height:72px; border-radius:50%; background:#fff; border:3px solid var(--gold); display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 10px 40px rgba(0,0,0,.5),0 0 30px rgba(166,217,63,.35);} .dp-cplay svg{margin-left:4px;}
+  .dp-side{width:392px; flex-shrink:0; background:var(--navy-1); border-left:1px solid var(--line); padding:32px 30px; display:flex; flex-direction:column; overflow-y:auto; position:relative;}
+  .dp-back{align-self:flex-start; background:none; border:1px solid var(--line); color:var(--muted); font-size:13px; padding:8px 14px; border-radius:999px; cursor:pointer; margin-bottom:22px;} .dp-back:hover{color:var(--gold);}
+  .dprem{position:fixed; inset:0; z-index:62; background:rgba(8,8,11,.92); display:none; align-items:center; justify-content:center;} .dprem.show{display:flex; animation:fade .3s ease both;}
+  .dprem-card{width:500px; max-width:90%; background:var(--navy-1); border:1px solid var(--line); border-radius:20px; padding:40px; text-align:center; position:relative;}
+  .dstat-row{display:flex; gap:14px; margin-bottom:28px;}
+  .dstat{flex:1; background:var(--navy-1); border:1px solid var(--line); border-radius:16px; padding:22px 16px; text-align:center;}
+  .dstat .n{font-size:32px; font-weight:800; color:var(--gold); line-height:1;} .dstat .l{font-size:11.5px; color:var(--muted); margin-top:6px;}
+  /* portrait hero (Reel) */
+  .dhero-row{display:flex; gap:46px; align-items:center; margin-bottom:42px;}
+  .dhero-text{flex:1; min-width:0;} .dhero-text .dh-eye{margin-bottom:12px;} .dhero-text .dh-name{margin-bottom:14px; text-shadow:none;} .dhero-text .dh-desc{max-width:none; margin-bottom:22px;}
+  .dhero-media{position:relative; width:300px; aspect-ratio:9/16; border-radius:22px; overflow:hidden; flex-shrink:0; cursor:pointer; border:1px solid var(--line); box-shadow:0 30px 60px -22px rgba(0,0,0,.75);}
+  .dhero-media video,.dhero-media .dh-poster{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center top;}
+  .dh-play{position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:56px; height:56px; border-radius:50%; background:rgba(255,255,255,.92); border:2px solid var(--gold); display:flex; align-items:center; justify-content:center; box-shadow:0 8px 26px rgba(0,0,0,.4);} .dh-play svg{margin-left:3px;}
+  .dhero-dots{display:flex; gap:6px; margin-top:22px;} .dhero-dots i{width:7px; height:7px; border-radius:50%; background:rgba(255,255,255,.25);} .dhero-dots i.on{background:var(--gold); width:20px; border-radius:3px;}
+  .dhero-nav{position:absolute; top:50%; transform:translateY(-50%); z-index:3; width:38px; height:38px; border-radius:50%; background:rgba(8,8,11,.55); backdrop-filter:blur(6px); border:1px solid rgba(255,255,255,.18); color:#fff; display:flex; align-items:center; justify-content:center; font-size:19px; cursor:pointer;} .dhero-nav.left{left:10px;} .dhero-nav.right{right:10px;} .dhero-nav:hover{background:rgba(8,8,11,.82);}
+  /* desktop practice — portrait, Instagram-style */
+  .dprac{background:rgba(8,8,11,.96);} .dprac.show{align-items:center; justify-content:center;}
+  .dprac-card{display:flex; height:84vh; max-height:760px; background:var(--navy-1); border:1px solid var(--line); border-radius:20px; overflow:hidden; box-shadow:0 40px 100px -30px rgba(0,0,0,.8);}
+  .dpc-video{position:relative; aspect-ratio:9/16; height:100%; background:#000; flex-shrink:0;}
+  .dpc-video video{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center top;}
+  .dpc-cplay{position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:70px; height:70px; border-radius:50%; background:#fff; border:3px solid var(--gold); display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 10px 40px rgba(0,0,0,.5),0 0 30px rgba(166,217,63,.35);} .dpc-cplay svg{margin-left:4px;}
+  .dpc-side{width:360px; flex-shrink:0; padding:34px 30px; display:flex; flex-direction:column; overflow-y:auto; position:relative;} .dpc-side .i-desc{font-size:13.5px; line-height:1.55; color:#cfccd6; margin:8px 0 16px;}
+  .dprac-x{position:absolute; top:22px; right:26px; background:rgba(255,255,255,.08); border:1px solid var(--line); color:var(--cream); width:32px; height:32px; border-radius:50%; cursor:pointer; font-size:14px;}
+  .dprac-arrow{width:46px; height:46px; border-radius:50%; background:rgba(255,255,255,.08); border:1px solid var(--line); color:var(--cream); cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:22px; margin:0 22px; flex-shrink:0;} .dprac-arrow:hover{background:rgba(255,255,255,.16);}
+</style>
+</head>
+<body>
+  <div class="devbar">
+    <div class="devtoggle">
+      <button id="tglMobile" class="on" onclick="setDevice('mobile')">Mobile</button>
+      <button id="tglDesktop" onclick="setDevice('desktop')">Desktop</button>
+    </div>
+    <div class="stage-label">Satori <b>Daily</b> &nbsp;—&nbsp; concept mockup</div>
+  </div>
+
+  <div id="mobileStage">
+  <div class="phone">
+    <div class="notch"></div>
+
+    <!-- COVER -->
+    <div class="layer active" id="coverLayer">
+      <div class="cover-inner">
+        <div class="logo-ring"><svg width="62" height="62" viewBox="0 0 62 62" fill="none"><circle cx="31" cy="31" r="27" stroke="url(#ring)" stroke-width="3.5"/><text x="31" y="41" text-anchor="middle" font-size="30" font-weight="800" fill="#fff" font-family="Segoe UI,Arial,sans-serif">S</text><defs><linearGradient id="ring" x1="0" y1="0" x2="62" y2="62"><stop stop-color="#a6d93f"/><stop offset="0.6" stop-color="#e8823c"/><stop offset="1" stop-color="#c21f43"/></linearGradient></defs></svg></div>
+        <div class="cover-word">SATORI <span>DAILY</span></div>
+        <div class="cover-tag">Your daily dose of vital energy.</div>
+        <div class="cover-sub">One short practice a day — breath, movement, meditation, mindset. Two minutes to shift your state.</div>
+        <button class="cover-btn" onclick="beginPractice()">Begin today's practice</button>
+        <div class="cover-streak">🔥 7-day streak · keep it alive</div>
+      </div>
+    </div>
+
+    <!-- TODAY (promo feed) -->
+    <div class="layer" id="todayLayer">
+      <div class="feed" id="feed"></div>
+      <div class="progressbar" id="pbar"></div>
+      <div class="feed-top"><div class="word" onclick="goHome()">SAT<span>O</span>RI</div><div class="streak">🔥 <span id="streakTop">7</span></div></div>
+      <div class="arrow left" onclick="scrollFeed(-1)">‹</div>
+      <div class="arrow right" onclick="scrollFeed(1)">›</div>
+      <div class="dots" id="dots"></div>
+    </div>
+
+    <!-- PRACTICE (selected) -->
+    <div class="practice" id="practiceLayer">
+      <video id="pracVideo" playsinline loop preload="metadata"></video>
+      <div class="p-scrim-top"></div><div class="p-scrim-bot"></div>
+      <div class="s-note" id="pracNote" style="display:none">Guided audio / video plays here</div>
+      <div class="prac-top">
+        <button class="p-x" onclick="closePractice()">‹ Today</button>
+        <div class="word" onclick="goHome()" style="font-size:13px">SAT<span>O</span>RI</div>
+        <div class="streak">🔥 <span id="streakTop3">7</span></div>
+      </div>
+      <div class="center-play hidden" id="pracPlay" onclick="pracToggle(event)"><svg width="26" height="26" viewBox="0 0 24 24" fill="#12161f"><path d="M8 5v14l11-7z"/></svg></div>
+      <div class="prac-bottom" id="pracBottom" style="display:none">
+        <button class="info-btn" onclick="showInfo()">ⓘ Info &amp; cues</button>
+        <button class="cta" onclick="logCurrent()">Log practice</button>
+      </div>
+
+      <!-- info sheet -->
+      <div class="info-sheet" id="infoSheet">
+        <button class="sheet-x" onclick="startPractice()">✕</button>
+        <div class="eyebrow" id="iEye">Qigong · Breath</div>
+        <div class="move-name" id="iTitle">Dragon Wings</div>
+        <div class="chips" id="iChips"></div>
+        <div class="i-desc" id="iDesc"></div>
+        <ul class="cues" id="iCues"></ul>
+        <button class="cta lime" onclick="startPractice()">Start practice ›</button>
+      </div>
+
+      <!-- completion -->
+      <div class="done" id="doneWrap">
+        <div class="seal"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#a6d93f" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+        <h3>Day <span id="doneDay">8</span>. Logged.</h3>
+        <p id="donePractices">Nice — practice logged.</p>
+        <div class="conf-q">How confident with this one?</div>
+        <div class="conf-row" id="confRow">
+          <div class="conf" onclick="setConf(this,25)">Learning</div>
+          <div class="conf" onclick="setConf(this,50)">Getting it</div>
+          <div class="conf" onclick="setConf(this,75)">Confident</div>
+          <div class="conf" onclick="setConf(this,100)">Got it</div>
+        </div>
+        <a class="learn" href="https://satorimethod.com" target="_blank" rel="noopener">Learn more → join the Satori Dojo ↗</a><br>
+        <button class="again" onclick="resetDone()">↺ Back to the practice</button>
+      </div>
+    </div>
+
+    <!-- LIBRARY -->
+    <div class="layer" id="libraryLayer">
+      <div class="scroll">
+        <div class="brand"><div class="word" onclick="goHome()">SAT<span>O</span>RI</div><div class="badge" onclick="openPremium()" style="cursor:pointer">★ Go Premium</div></div>
+        <div class="h">Practice by outcome</div>
+        <div class="pillars">
+          <div class="pillar qi" onclick="openPillar('qi')"><div class="p-ic">🐉</div><div><div class="p-name">Qigong</div><div class="p-count">31 moves · 6 tracks</div></div></div>
+          <div class="pillar breath" onclick="openPillar('breath')"><div class="p-ic">🌬️</div><div><div class="p-name">Breath</div><div class="p-count">18 practices</div></div></div>
+          <div class="pillar med" onclick="openPillar('med')"><div class="p-ic">🌙</div><div><div class="p-name">Meditation</div><div class="p-count">24 guided</div></div></div>
+          <div class="pillar mind" onclick="openPillar('mind')"><div class="p-ic">✨</div><div><div class="p-name">Mindset</div><div class="p-count">12 trainings</div></div></div>
+        </div>
+        <div class="eyebrow2">Just music — for practice</div>
+        <div class="rowcard" onclick="playTrack('State of Grace','Non-guided · Craig Young','state-of-grace.mp3')"><div class="thumb aud">♪</div><div><div class="r1">State of Grace <span class="free">Free</span></div><div class="r2">Non-guided · Craig Young · 7 min</div></div></div>
+        <div class="rowcard" onclick="openPremium()"><div class="thumb aud">♪</div><div><div class="r1">Rise of the Dragons <span class="lock">Premium</span></div><div class="r2">Non-guided · Craig Young · 8 min</div></div></div>
+        <div class="rowcard" onclick="openPremium()"><div class="thumb aud">♪</div><div><div class="r1">Transcendence <span class="lock">Premium</span></div><div class="r2">Non-guided · Craig Young · 10 min</div></div></div>
+      </div>
+    </div>
+
+    <!-- PILLAR DETAIL -->
+    <div class="layer" id="pillarLayer">
+      <div class="scroll">
+        <button class="back" onclick="go2('libraryLayer')">‹ Practice by outcome</button>
+        <div class="h" id="pillarTitle">Qigong</div>
+        <div class="segrow" id="segRow"><div class="seg on" onclick="segTo(this,'videos')">Videos</div><div class="seg" onclick="segTo(this,'music')">Music</div></div>
+        <div id="pillarBody"></div>
+      </div>
+    </div>
+
+    <!-- PROGRESS -->
+    <div class="layer" id="progressLayer">
+      <div class="scroll">
+        <div class="brand"><div class="word" onclick="goHome()">SAT<span>O</span>RI</div><div class="badge">Progress</div></div>
+        <div class="bigstat"><div class="n" id="streakBig">7</div><div class="l">day streak · keep it alive</div></div>
+        <div class="eyebrow2">This month</div>
+        <div class="grid-cal" id="cal"></div>
+        <div class="statline"><span>Practices logged</span><span id="loggedStat">19</span></div>
+        <div class="statline"><span>Meditations logged</span><span>4</span></div>
+        <div class="statline"><span>Minutes practiced</span><span>92</span></div>
+        <div class="statline"><span>Moves at "Got it"</span><span>6</span></div>
+        <div class="statline"><span>Longest streak</span><span>11 days</span></div>
+        <div class="eyebrow2">By practice</div>
+        <div class="statline"><span>🐉 Qigong sessions</span><span>8</span></div>
+        <div class="statline"><span>🌬️ Breath sessions</span><span>5</span></div>
+        <div class="statline"><span>🌙 Meditations</span><span>4</span></div>
+        <div class="statline"><span>✨ Mindset trainings</span><span>2</span></div>
+      </div>
+    </div>
+
+    <!-- PREMIUM -->
+    <div class="premium" id="premiumOverlay">
+      <button class="prem-close" onclick="closePremium()">✕</button>
+      <div class="prem-inner">
+        <div class="prem-badge">SATORI DAILY · PREMIUM</div>
+        <h2>Go all-in on the practice</h2>
+        <div class="price"><b>$17</b> / month</div>
+        <div class="prem-sub">Everything in free, plus the whole Satori library.</div>
+        <ul class="feat">
+          <li><span class="ico">✓</span> The full library — 80+ practices across every pillar</li>
+          <li><span class="ico">✓</span> Every guided meditation, new ones added weekly</li>
+          <li><span class="ico">✓</span> Exclusive music — guided &amp; non-guided, scored by Craig Young</li>
+          <li><span class="ico">✓</span> A personalized daily path that adapts to you</li>
+          <li><span class="ico">✓</span> Offline practice, no ads, ever</li>
+        </ul>
+        <button class="cta lime wide">Start 7-day free trial</button>
+        <div class="prem-note">Then $17/mo · cancel anytime</div>
+        <div class="prem-or">— or go deeper —</div>
+        <a class="dojo-link" href="https://satorimethod.com" target="_blank" rel="noopener">Join the Qigong Dojo → the full Satori world ↗</a>
+        <div class="prem-free">On free you always get today's practice, a taste of each pillar, and your streak.</div>
+      </div>
+    </div>
+
+    <div class="nowbar" id="nowbar"><div class="np-eq"><span></span><span></span><span></span></div><div><div class="np1" id="npTitle">State of Grace</div><div class="np2" id="npSub">Non-guided · Craig Young</div></div><div class="np-x" onclick="stopTrack()">✕</div></div>
+    <audio id="trackAudio" preload="none"></audio>
+
+    <nav class="nav">
+      <button class="active" data-view="todayLayer" onclick="go(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>Today</button>
+      <button data-view="libraryLayer" onclick="go(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="7" height="16" rx="1"/><rect x="14" y="4" width="7" height="16" rx="1"/></svg>Library</button>
+      <button data-view="progressLayer" onclick="go(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V5M4 19h16M8 15l3-3 3 2 4-5"/></svg>Progress</button>
+      <button data-view="todayLayer" onclick="go(this)" style="opacity:.55"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M5 20c0-3.5 3-6 7-6s7 2.5 7 6"/></svg>You</button>
+    </nav>
+  </div>
+  </div><!-- /mobileStage -->
+
+  <div id="desktopStage" style="display:none">
+    <div class="deskwin">
+      <aside class="dside">
+        <div class="dlogo" onclick="dGoTo('dToday')">SAT<span>O</span>RI<em>DAILY</em></div>
+        <nav class="dnav">
+          <button class="dn on" data-d="dToday" onclick="dGo(this)">◎&nbsp;&nbsp;Today</button>
+          <button class="dn" data-d="dLibrary" onclick="dGo(this)">▤&nbsp;&nbsp;Library</button>
+          <button class="dn" data-d="dProgress" onclick="dGo(this)">▦&nbsp;&nbsp;Progress</button>
+        </nav>
+        <div class="dside-foot">
+          <div class="dstreak">🔥 <span id="dStreak">7</span>-day streak</div>
+          <button class="dgo-prem" onclick="dOpenPremium()">★ Go Premium</button>
+        </div>
+      </aside>
+      <main class="dmain">
+        <section class="dview on" id="dToday"></section>
+        <section class="dview" id="dLibrary"></section>
+        <section class="dview" id="dPillar"></section>
+        <section class="dview" id="dProgress"></section>
+        <div class="dprac" id="dPrac"></div>
+        <div class="dprem" id="dPrem"></div>
+      </main>
+    </div>
+  </div>
+
+
+<script>
+  let streak=7, practices=3, curIdx=0, promoTimer=null;
+  const PROMO_MS=12000; // demo pacing; real ~30000
+  const TODAY=[
+    {t:'Dragon Wings',eye:'Qigong · Breath',chips:['Qigong','Breath','1:04'],m:50,tag:'free',vid:'dragon-wings.mp4',grad:'linear-gradient(160deg,#3a2a20,#160f14)',
+      desc:'A simple Satori Method breath for respiratory health — open the chest, deepen the breath.',
+      cues:['Stand easy, knees soft. Inhale — sweep the arms wide, opening the chest like wings.','Exhale — sink slightly, drawing the wings down and in.','Let the breath lead: slow, full, unhurried. Feel the ribs expand each round.']},
+    {t:'Rooting — Standing Like a Tree',eye:'Qigong · Balance',chips:['Qigong','Balance','4:00'],m:25,tag:'free',vid:'rooting.mp4',grad:'linear-gradient(160deg,#22314a,#141d16)',
+      desc:'Find your base. A grounding standing practice to settle the mind and steady the body.',
+      cues:['Feet shoulder-width, knees soft. Let the breath drop low.','Arms round in front, as if holding a large sphere.','Sink the weight, lengthen the crown. Stay, and soften.']},
+    {t:'Calm in Five Breaths',eye:'Breath · Downshift',chips:['Breath','5:00'],m:75,tag:'free',vid:'calm-breath.mp4',grad:'linear-gradient(160deg,#1f3a34,#152420)',
+      desc:'A fast reset for a busy moment — five slow breaths to drop the nervous system down a gear.',
+      cues:['Inhale for four. Let the belly rise first.','Exhale for six — longer out than in.','Five rounds. Notice the shoulders drop.']},
+    {t:'Cloud Hands',eye:'Qigong · Flow',chips:['Qigong','Flow','3:00'],m:0,tag:'lock',vid:'',teaser:'rooting.mp4',grad:'linear-gradient(160deg,#2a1f3d,#160f22)',desc:'A flowing qigong practice — trade the hands like slow clouds. Unlock with Premium.',cues:[]},
+    {t:'Morning Coherence',eye:'Meditation · Guided',chips:['Meditation','Guided','8:00'],m:50,tag:'free',vid:'',grad:'linear-gradient(160deg,#3a3324,#231d14)',
+      desc:'A guided heart-centered meditation to open the day in coherence.',
+      cues:['Settle in, hand on the heart.','Follow the guidance — breath into the heart space.','Let coherence build. No effort, just attention.']},
+    {t:'Evening Wind-Down',eye:'Meditation · Guided',chips:['Meditation','Guided','10:00'],m:0,tag:'lock',vid:'',teaser:'calm-breath.mp4',grad:'linear-gradient(160deg,#22314a,#161f30)',desc:'A guided descent into rest. Unlock with Premium.',cues:[]},
+    {t:'Vital Energy Priming',eye:'Mindset · Training',chips:['Mindset','7:00'],m:0,tag:'lock',vid:'',teaser:'dragon-wings.mp4',grad:'linear-gradient(160deg,#3a2a20,#231512)',desc:'Prime your state for the day ahead. Unlock with Premium.',cues:[]}
+  ];
+
+  function beginPractice(){ document.getElementById('coverLayer').classList.remove('active'); document.getElementById('todayLayer').classList.add('active'); setTimeout(()=>setActive(0,true),60); }
+  function goHome(){ closePractice(); closePremium(); document.querySelectorAll('.layer').forEach(l=>l.classList.remove('active')); clearTimeout(promoTimer); document.querySelectorAll('.s-video').forEach(v=>v.pause()); document.getElementById('coverLayer').classList.add('active'); document.querySelectorAll('.nav button').forEach((b,i)=>b.classList.toggle('active',i===0)); }
+  function openPremium(){ document.getElementById('premiumOverlay').classList.add('show'); }
+  function closePremium(){ document.getElementById('premiumOverlay').classList.remove('show'); }
+
+  const PLAY_SVG='<svg width="26" height="26" viewBox="0 0 24 24" fill="#12161f"><path d="M8 5v14l11-7z"/></svg>';
+  function renderFeed(){
+    const feed=document.getElementById('feed'); let h='';
+    TODAY.forEach((p,i)=>{
+      if(p.tag==='lock'){
+        const tv=p.teaser?'<video class="s-video" muted playsinline loop preload="metadata" src="'+p.teaser+'" style="filter:brightness(.5)"></video>':'';
+        h+='<div class="slide locked" style="background:'+p.grad+'">'+tv+'<div class="lock-scrim"></div><div class="lock-inner">'
+          +'<div class="lock-badge">Premium</div><div class="move-name">'+p.t+'</div>'
+          +'<div class="chips">'+p.chips.map(c=>'<span class="chip">'+c+'</span>').join('')+'</div>'
+          +'<div class="lock-ic">🔒</div><button class="cta lime" onclick="openPremium()">Unlock with Premium</button>'
+          +'<div class="lock-note">Free members get a new practice every day.</div></div></div>';
+        return;
+      }
+      const media = p.vid ? '<video class="s-video" muted playsinline loop preload="metadata" src="'+p.vid+'"></video>' : '<div class="s-poster" style="background:'+p.grad+'"></div>';
+      const note = p.vid ? '' : '<div class="s-note">Guided practice</div>';
+      h+='<div class="slide" data-i="'+i+'" style="background:'+p.grad+'" onclick="openPractice('+i+')">'+media
+        +'<div class="p-scrim-top"></div><div class="p-scrim-bot"></div>'+note
+        +'<div class="s-promo"><div class="s-tag">'+p.eye+'</div><div class="move-name">'+p.t+'</div><div class="begin-pill">Tap to begin ›</div></div></div>';
+    });
+    feed.innerHTML=h;
+    document.getElementById('pbar').innerHTML=TODAY.map(()=>'<i><b></b></i>').join('');
+    renderDots();
+  }
+  function renderDots(){ const d=document.getElementById('dots'); d.innerHTML=TODAY.map((_,i)=>'<i class="'+(i===curIdx?'on':'')+'"></i>').join(''); }
+  function paintBars(){ const bars=document.querySelectorAll('#pbar i'); bars.forEach((b,i)=>{ b.classList.remove('on','done'); b.style.setProperty('--pd',(PROMO_MS/1000)+'s'); if(i<curIdx)b.classList.add('done'); if(i===curIdx)b.classList.add('on'); }); }
+
+  function setActive(i,scroll){
+    curIdx=i; const feed=document.getElementById('feed');
+    if(scroll) feed.scrollTo({left:i*feed.clientWidth, behavior:'auto'});
+    feed.querySelectorAll('.slide').forEach((s,k)=>{ const v=s.querySelector('.s-video'); if(!v)return; if(k===i){ v.currentTime=0; v.play().catch(()=>{}); } else { v.pause(); } });
+    renderDots(); paintBars();
+    clearTimeout(promoTimer);
+    promoTimer=setTimeout(()=>{ if(!document.getElementById('todayLayer').classList.contains('active'))return; if(document.getElementById('practiceLayer').classList.contains('show'))return; setActive((curIdx+1)%TODAY.length,true); }, PROMO_MS);
+  }
+  function scrollFeed(dir){ const n=Math.max(0,Math.min(TODAY.length-1,curIdx+dir)); setActive(n,true); }
+  function onFeedScroll(){ const feed=document.getElementById('feed'); const i=Math.round(feed.scrollLeft/feed.clientWidth); if(i!==curIdx){ setActive(i,false); } }
+
+  /* Practice (selected) */
+  function openPractice(i){
+    const p=TODAY[i]; if(p.tag==='lock'){ openPremium(); return; }
+    curIdx=i; clearTimeout(promoTimer);
+    const pl=document.getElementById('practiceLayer'), v=document.getElementById('pracVideo');
+    pl.style.background=p.grad; pl.classList.remove('focus');
+    document.getElementById('iEye').textContent=p.eye;
+    document.getElementById('iTitle').textContent=p.t;
+    document.getElementById('iChips').innerHTML=p.chips.map(c=>'<span class="chip">'+c+'</span>').join('')+' <span class="mastery">confidence <span class="mbar"><i id="iMastery" style="width:'+p.m+'%"></i></span></span>';
+    document.getElementById('iDesc').textContent=p.desc||'';
+    document.getElementById('iCues').innerHTML=p.cues.map((c,n)=>'<li><b>'+(n+1)+'.</b> '+c+'</li>').join('');
+    document.getElementById('pracBottom').style.display='none';
+    document.getElementById('pracPlay').classList.add('hidden');
+    document.getElementById('doneWrap').classList.remove('show');
+    if(p.vid){ v.src=p.vid; v.muted=false; v.style.display='block'; v.load(); document.getElementById('pracNote').style.display='none'; }
+    else { v.removeAttribute('src'); v.style.display='none'; document.getElementById('pracNote').style.display='block'; }
+    pl.classList.add('show');
+    setTimeout(()=>document.getElementById('infoSheet').classList.add('show'),50);
+  }
+  function startPractice(){
+    document.getElementById('infoSheet').classList.remove('show');
+    const v=document.getElementById('pracVideo');
+    document.getElementById('pracBottom').style.display='flex';
+    if(v.currentSrc){ v.play().then(()=>document.getElementById('pracPlay').classList.add('hidden')).catch(()=>document.getElementById('pracPlay').classList.remove('hidden')); }
+    else { document.getElementById('pracPlay').classList.remove('hidden'); }
+  }
+  function showInfo(){ document.getElementById('infoSheet').classList.add('show'); }
+  function pracToggle(e){ e.stopPropagation(); const v=document.getElementById('pracVideo'), b=document.getElementById('pracPlay'); if(!v.currentSrc) return; if(v.paused){v.play(); b.classList.add('hidden');} else {v.pause(); b.classList.remove('hidden');} }
+  function closePractice(){ const v=document.getElementById('pracVideo'); if(v && !v.paused) v.pause(); const pl=document.getElementById('practiceLayer'); pl.classList.remove('show','focus'); document.getElementById('infoSheet').classList.remove('show'); document.getElementById('doneWrap').classList.remove('show'); if(document.getElementById('todayLayer').classList.contains('active')) setActive(curIdx,true); }
+
+  function logCurrent(){
+    streak++; practices++;
+    document.getElementById('streakTop').textContent=streak; document.getElementById('streakTop3').textContent=streak; document.getElementById('streakBig').textContent=streak;
+    document.getElementById('loggedStat').textContent=(19+(practices-3));
+    document.getElementById('doneDay').textContent=streak+1;
+    document.getElementById('donePractices').textContent='Nice — '+TODAY[curIdx].t+', logged.';
+    document.querySelectorAll('#confRow .conf').forEach(c=>c.classList.remove('sel'));
+    const v=document.getElementById('pracVideo'); if(v && !v.paused) v.pause();
+    document.getElementById('doneWrap').classList.add('show'); buildCal();
+  }
+  function setConf(el,val){
+    document.querySelectorAll('#confRow .conf').forEach(c=>c.classList.remove('sel')); el.classList.add('sel');
+    TODAY[curIdx].m=val; const f=document.getElementById('iMastery'); if(f) f.style.width=val+'%';
+    setTimeout(()=>{
+      const v=document.getElementById('pracVideo'); if(v && !v.paused) v.pause();
+      document.getElementById('practiceLayer').classList.remove('show','focus');
+      document.getElementById('doneWrap').classList.remove('show');
+      document.getElementById('infoSheet').classList.remove('show');
+      clearTimeout(promoTimer);
+      go2('progressLayer');
+    },520);
+  }
+  function resetDone(){ document.getElementById('doneWrap').classList.remove('show'); }
+
+  function go(btn){ document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); closePractice(); show(btn.dataset.view); }
+  function go2(id){ show(id); document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active', b.dataset.view===id)); }
+  function show(id){ document.querySelectorAll('.layer').forEach(l=>l.classList.remove('active')); document.getElementById(id).classList.add('active');
+    if(id==='todayLayer'){ setActive(curIdx,true); } else { clearTimeout(promoTimer); document.querySelectorAll('.s-video').forEach(v=>v.pause()); } }
+
+  const PILLARS={
+    qi:{title:'Qigong', videos:[{t:'Dragon Wings',s:'Breath · 1 min',tag:'free',m:50},{t:'Rooting — Standing Like a Tree',s:'Balance · 4 min',tag:'lock',m:25},{t:'Cloud Hands',s:'Flow · 3 min',tag:'lock',m:0}],
+      music:[{t:'Rise of the Dragons',s:'Non-guided · Craig Young · 8 min',tag:'free',f:'rise-of-the-dragons.mp3'},{t:'Timeless Dream',s:'Non-guided · Craig Young · 6 min',tag:'lock',f:'timeless-dream.mp3'}]},
+    breath:{title:'Breath', videos:[{t:'Calm in Five Breaths',s:'Downshift · 5 min',tag:'free',m:75},{t:'Ocean Breath',s:'Energy · 4 min',tag:'lock',m:0}],
+      music:[{t:'Transcendence (Breath Mix)',s:'Non-guided · Craig Young · 10 min',tag:'lock',f:'transcendence.mp3'}]},
+    med:{title:'Meditation', videos:[{t:'Morning Coherence',s:'Guided · Tristan · 8 min',tag:'free',m:50},{t:'Evening Wind-Down',s:'Guided · Tristan · 10 min',tag:'lock',m:0},{t:'Body Scan Reset',s:'Guided · Tristan · 12 min',tag:'lock',m:0}],
+      music:[{t:'State of Grace',s:'Non-guided · Craig Young · 7 min',tag:'free',f:'state-of-grace.mp3'}]},
+    mind:{title:'Mindset', videos:[{t:'Reframe the Day',s:'Training · 6 min',tag:'free',m:0},{t:'Vital Energy Priming',s:'Training · 7 min',tag:'lock',m:0}],
+      music:[{t:'Timeless Dream',s:'Non-guided · Craig Young · 6 min',tag:'lock',f:'timeless-dream.mp3'}]}
+  };
+  let curPillar='qi', curSeg='videos';
+  function openPillar(key){ curPillar=key; curSeg='videos'; document.getElementById('pillarTitle').textContent=PILLARS[key].title; document.querySelectorAll('#segRow .seg').forEach((s,i)=>s.classList.toggle('on',i===0)); renderPillar(); go2('pillarLayer'); }
+  function segTo(el,seg){ document.querySelectorAll('#segRow .seg').forEach(s=>s.classList.remove('on')); el.classList.add('on'); curSeg=seg; renderPillar(); }
+  function renderPillar(){
+    const p=PILLARS[curPillar], body=document.getElementById('pillarBody'); const items=curSeg==='videos'?p.videos:p.music; const isVid=curSeg==='videos'; let html='';
+    items.forEach(it=>{ const tag=it.tag==='free'?'<span class="free">Free</span>':'<span class="lock">Premium</span>'; const icon=isVid?'▶':'♪';
+      const mini=(isVid&&it.m!==undefined)?'<span class="rmini"><i style="width:'+it.m+'%"></i></span>':'';
+      let click=''; if(it.tag==='lock') click=' onclick="openPremium()"'; else if(!isVid) click=' onclick="playTrack(\''+it.t.replace(/'/g,"")+'\',\''+it.s.replace(/'/g,"")+'\',\''+(it.f||'')+'\')"';
+      html+='<div class="rowcard"'+click+'><div class="thumb '+(isVid?'vid':'aud')+'">'+icon+'</div><div style="flex:1"><div class="r1">'+it.t+' '+tag+'</div><div class="r2">'+it.s+'</div></div>'+mini+'</div>'; });
+    body.innerHTML=html;
+  }
+  function playTrack(t,s,file){ document.getElementById('npTitle').textContent=t; document.getElementById('npSub').textContent=s; document.getElementById('nowbar').classList.add('show'); const a=document.getElementById('trackAudio'); a.src=file||'state-of-grace.mp3'; a.volume=0.7; a.play().catch(()=>{}); }
+  function stopTrack(){ document.getElementById('nowbar').classList.remove('show'); document.getElementById('trackAudio').pause(); }
+  function buildCal(){ const cal=document.getElementById('cal'); if(!cal) return; cal.innerHTML=''; const done=Math.min(19+(practices-3),21); for(let i=1;i<=28;i++){ const c=document.createElement('div'); c.className='cell'; if(i<=done)c.classList.add('on'); if(i===done)c.classList.add('today'); cal.appendChild(c);} }
+
+  document.addEventListener('DOMContentLoaded',()=>{
+    renderFeed(); buildCal();
+    const feed=document.getElementById('feed');
+    let t; feed.addEventListener('scroll',()=>{ clearTimeout(t); t=setTimeout(onFeedScroll,90); });
+    document.addEventListener('keydown',e=>{ if(!document.getElementById('todayLayer').classList.contains('active'))return; if(document.getElementById('practiceLayer').classList.contains('show'))return; if(e.key==='ArrowRight')scrollFeed(1); if(e.key==='ArrowLeft')scrollFeed(-1); });
+  });
+
+  /* ===== Desktop layout ===== */
+  let dRendered=false, dCurPillar='qi', dCurSeg='videos', dHeroIdx=0, dHeroTimer=null;
+  function setDevice(dev){
+    const m=document.getElementById('mobileStage'), k=document.getElementById('desktopStage');
+    document.getElementById('tglMobile').classList.toggle('on',dev==='mobile');
+    document.getElementById('tglDesktop').classList.toggle('on',dev==='desktop');
+    if(dev==='desktop'){
+      m.style.display='none'; k.style.display='flex';
+      clearTimeout(promoTimer); document.querySelectorAll('#mobileStage video').forEach(v=>v.pause());
+      if(!dRendered){ dRenderAll(); dRendered=true; }
+      dGoTo('dToday');
+    } else {
+      k.style.display='none'; m.style.display='block';
+      document.querySelectorAll('#desktopStage video').forEach(v=>v.pause());
+    }
+  }
+  function dChips(a){ return a.map(c=>'<span class="chip">'+c+'</span>').join(''); }
+  function dRenderAll(){ dRenderToday(); dRenderLibrary(); dRenderProgress(); }
+
+  function dRenderToday(){
+    let h='<div class="dhead">Today · Wednesday, Aug 19</div><div class="dtitle">Your daily practice</div>';
+    h+='<div class="dhero-row" id="dHeroWrap"></div>';
+    h+='<div class="dhead" style="color:var(--sage)">Today’s set</div><div class="dgrid">';
+    TODAY.forEach((p,i)=>{ const tag=p.tag==='lock'?'<span class="lock">Premium</span>':'<span class="free">Free</span>';
+      const pick=i===0?'<span class="free" style="color:var(--navy-0);background:var(--gold);border:0">Pick</span>':'<span></span>';
+      h+='<div class="dcard" onclick="dOpenPractice('+i+')" style="background:'+p.grad+'"><div class="dc-scrim"></div><div class="dc-top">'+pick+tag+'</div><div class="dc-play"><svg width="15" height="15" viewBox="0 0 24 24" fill="#12161f"><path d="M8 5v14l11-7z"/></svg></div><div class="dc-info"><div class="dc-name">'+p.t+'</div><div class="dc-chips">'+p.chips.join(' · ')+'</div><div class="dc-mbar"><i style="width:'+p.m+'%"></i></div></div></div>'; });
+    h+='</div>';
+    document.getElementById('dToday').innerHTML=h;
+    dSetHero(dHeroIdx);
+  }
+  function dSetHero(i){
+    dHeroIdx=i; const p=TODAY[i]; const wrap=document.getElementById('dHeroWrap'); if(!wrap)return;
+    const src=p.vid||p.teaser;
+    const media=src?'<video id="dHeroVid" muted loop playsinline preload="metadata" src="'+src+'"></video>':'<div class="dh-poster" style="background:'+p.grad+'"></div>';
+    const badge=p.tag==='lock'?' <span class="lock">Premium</span>':'';
+    const cta=p.tag==='lock'?'Unlock with Premium':'Start practice ›';
+    const dots=TODAY.map((_,k)=>'<i class="'+(k===i?'on':'')+'"></i>').join('');
+    wrap.innerHTML='<div class="dhero-text"><div class="dh-eye">'+(i===0?'Today’s pick · ':'Featured · ')+p.eye+'</div><div class="dh-name" style="font-size:38px">'+p.t+badge+'</div><div class="dh-desc">'+(p.desc||'A Satori Method practice.')+'</div><button class="dh-cta" onclick="dOpenPractice('+i+')">'+cta+'</button><div class="dhero-dots">'+dots+'</div></div>'
+      +'<div class="dhero-media" onclick="dOpenPractice('+i+')">'+media+'<div class="dhero-nav left" onclick="dHeroNav(-1,event)">‹</div><div class="dhero-nav right" onclick="dHeroNav(1,event)">›</div><div class="dh-play"><svg width="18" height="18" viewBox="0 0 24 24" fill="#12161f"><path d="M8 5v14l11-7z"/></svg></div></div>';
+    const v=document.getElementById('dHeroVid'); if(v) v.play().catch(()=>{});
+  }
+  function dRotateHero(){ clearInterval(dHeroTimer); dHeroTimer=setInterval(()=>{ if(!document.getElementById('dToday').classList.contains('on'))return; if(document.getElementById('dPrac').classList.contains('show'))return; dSetHero((dHeroIdx+1)%TODAY.length); },12000); }
+  function dHeroNav(dir,e){ if(e)e.stopPropagation(); dSetHero((dHeroIdx+dir+TODAY.length)%TODAY.length); dRotateHero(); }
+  function dRenderLibrary(){
+    let h='<div class="dhead">Library</div><div class="dtitle">Practice by outcome</div><div class="dpillars">';
+    [['qi','🐉','Qigong','31 moves · 6 tracks'],['breath','🌬️','Breath','18 practices'],['med','🌙','Meditation','24 guided'],['mind','✨','Mindset','12 trainings']].forEach(x=>{ h+='<div class="pillar '+x[0]+'" onclick="dOpenPillar(\''+x[0]+'\')"><div class="p-ic">'+x[1]+'</div><div><div class="p-name">'+x[2]+'</div><div class="p-count">'+x[3]+'</div></div></div>'; });
+    h+='</div><div class="dhead" style="color:var(--sage)">Just music — for practice</div>';
+    h+=dMusicRow('State of Grace','Non-guided · Craig Young · 7 min','free','state-of-grace.mp3')+dMusicRow('Rise of the Dragons','Non-guided · Craig Young · 8 min','lock','')+dMusicRow('Transcendence','Non-guided · Craig Young · 10 min','lock','');
+    document.getElementById('dLibrary').innerHTML=h;
+  }
+  function dMusicRow(t,s,tag,f){ const tg=tag==='free'?'<span class="free">Free</span>':'<span class="lock">Premium</span>'; const click=tag==='lock'?'dOpenPremium()':'dPlayTrack(\''+f+'\')'; return '<div class="rowcard" style="max-width:540px" onclick="'+click+'"><div class="thumb aud">♪</div><div><div class="r1">'+t+' '+tg+'</div><div class="r2">'+s+'</div></div></div>'; }
+  function dRenderProgress(){
+    let h='<div class="dhead">Progress</div><div class="dtitle">Your practice</div><div class="dstat-row">'
+      +'<div class="dstat"><div class="n" id="dStreakBig">'+streak+'</div><div class="l">day streak</div></div>'
+      +'<div class="dstat"><div class="n" id="dLogged">'+(19+(practices-3))+'</div><div class="l">practices logged</div></div>'
+      +'<div class="dstat"><div class="n">4</div><div class="l">meditations logged</div></div>'
+      +'<div class="dstat"><div class="n">6</div><div class="l">moves at “Got it”</div></div>'
+      +'<div class="dstat"><div class="n">92</div><div class="l">minutes</div></div></div>'
+      +'<div class="dhead" style="color:var(--sage)">This month</div><div class="grid-cal" id="dCal" style="max-width:540px; margin-bottom:28px"></div>'
+      +'<div class="dhead" style="color:var(--sage)">By practice</div><div style="max-width:540px">'
+      +'<div class="statline"><span>🐉 Qigong sessions</span><span>8</span></div>'
+      +'<div class="statline"><span>🌬️ Breath sessions</span><span>5</span></div>'
+      +'<div class="statline"><span>🌙 Meditations</span><span>4</span></div>'
+      +'<div class="statline"><span>✨ Mindset trainings</span><span>2</span></div>'
+      +'<div class="statline"><span>Longest streak</span><span>11 days</span></div></div>';
+    document.getElementById('dProgress').innerHTML=h; dBuildCal();
+  }
+  function dBuildCal(){ const cal=document.getElementById('dCal'); if(!cal)return; cal.innerHTML=''; const done=Math.min(19+(practices-3),21); for(let i=1;i<=28;i++){ const c=document.createElement('div'); c.className='cell'; if(i<=done)c.classList.add('on'); if(i===done)c.classList.add('today'); cal.appendChild(c);} }
+
+  function dGo(btn){ dGoTo(btn.dataset.d); }
+  function dGoTo(id){
+    document.querySelectorAll('.dview').forEach(v=>v.classList.remove('on'));
+    document.getElementById(id).classList.add('on');
+    document.querySelectorAll('.dn').forEach(b=>b.classList.toggle('on', b.dataset.d===id));
+    dClosePractice();
+    document.querySelectorAll('#desktopStage video').forEach(v=>{ if(v.id!=='dHeroVid') v.pause(); });
+    const hv=document.getElementById('dHeroVid'); if(hv){ if(id==='dToday') hv.play().catch(()=>{}); else hv.pause(); }
+    if(id==='dToday'){ dRotateHero(); } else { clearInterval(dHeroTimer); }
+  }
+  function dOpenPractice(i){
+    const p=TODAY[i]; if(p.tag==='lock'){ dOpenPremium(); return; } curIdx=i; dRenderPrac(); document.getElementById('dPrac').classList.add('show');
+  }
+  function dPracNav(dir){ curIdx=(curIdx+dir+TODAY.length)%TODAY.length; dRenderPrac(); }
+  function dRenderPrac(){
+    const p=TODAY[curIdx]; const src=p.vid||p.teaser;
+    const media=src?'<video id="dPracVid" playsinline loop preload="metadata" src="'+src+'"></video><div class="dpc-cplay" id="dPracPlay" onclick="dPracToggle(event)"><svg width="26" height="26" viewBox="0 0 24 24" fill="#12161f"><path d="M8 5v14l11-7z"/></svg></div>':'<div class="dh-poster" style="background:'+p.grad+'"></div><div class="s-note" style="color:var(--muted);top:46%">Guided audio / video plays here</div>';
+    const cues=p.cues.length?'<ul class="cues" style="background:rgba(24,23,31,.6)">'+p.cues.map((c,n)=>'<li><b>'+(n+1)+'.</b> '+c+'</li>').join('')+'</ul>':'';
+    const logBtn=p.tag==='lock'?'<button class="cta lime" onclick="dOpenPremium()">Unlock with Premium</button>':'<button class="cta" onclick="dLog()">Log practice</button>';
+    document.getElementById('dPrac').innerHTML=
+      '<div class="dprac-arrow" onclick="dPracNav(-1)">‹</div>'
+      +'<div class="dprac-card"><div class="dpc-video">'+media+'</div>'
+      +'<div class="dpc-side"><button class="dprac-x" onclick="dClosePractice()">✕</button>'
+      +'<div class="eyebrow" style="text-shadow:none">'+p.eye+'</div><div class="move-name" style="text-shadow:none;font-size:24px">'+p.t+'</div>'
+      +'<div class="chips">'+dChips(p.chips)+' <span class="mastery">confidence <span class="mbar"><i id="dMastery" style="width:'+p.m+'%"></i></span></span></div>'
+      +'<div class="i-desc">'+(p.desc||'')+'</div>'+cues+'<div style="flex:1"></div>'+logBtn+'</div></div>'
+      +'<div class="dprac-arrow" onclick="dPracNav(1)">›</div>'
+      +'<div class="done" id="dDone">'+dDoneHTML()+'</div>';
+    const v=document.getElementById('dPracVid'); if(v){ v.muted=false; v.play().then(()=>{document.getElementById('dPracPlay').style.display='none';}).catch(()=>{}); }
+  }
+  function dDoneHTML(){ return '<div style="text-align:center;max-width:320px"><div class="seal"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#a6d93f" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div><h3>Day <span id="dDoneDay">'+(streak+1)+'</span>. Logged.</h3><p id="dDoneP">Nice — practice logged.</p><div class="conf-q">How confident with this one?</div><div class="conf-row" id="dConfRow"><div class="conf" onclick="dSetConf(this,25)">Learning</div><div class="conf" onclick="dSetConf(this,50)">Getting it</div><div class="conf" onclick="dSetConf(this,75)">Confident</div><div class="conf" onclick="dSetConf(this,100)">Got it</div></div><a class="learn" href="https://satorimethod.com" target="_blank" rel="noopener">Learn more → join the Satori Dojo ↗</a></div>'; }
+  function dPracToggle(e){ e.stopPropagation(); const v=document.getElementById('dPracVid'),b=document.getElementById('dPracPlay'); if(!v)return; if(v.paused){v.play();b.style.display='none';}else{v.pause();b.style.display='flex';} }
+  function dClosePractice(){ const v=document.getElementById('dPracVid'); if(v&&!v.paused)v.pause(); document.getElementById('dPrac').classList.remove('show'); }
+  function dLog(){ streak++; practices++; dSyncStreak(); document.getElementById('dDoneDay').textContent=streak+1; document.getElementById('dDoneP').textContent='Nice — '+TODAY[curIdx].t+', logged.'; document.querySelectorAll('#dConfRow .conf').forEach(c=>c.classList.remove('sel')); const v=document.getElementById('dPracVid'); if(v&&!v.paused)v.pause(); document.getElementById('dDone').classList.add('show'); }
+  function dSetConf(el,val){ document.querySelectorAll('#dConfRow .conf').forEach(c=>c.classList.remove('sel')); el.classList.add('sel'); TODAY[curIdx].m=val; const f=document.getElementById('dMastery'); if(f)f.style.width=val+'%'; setTimeout(()=>{ dClosePractice(); dRenderToday(); dRenderProgress(); dGoTo('dProgress'); },520); }
+  function dSyncStreak(){ const a=document.getElementById('dStreak'); if(a)a.textContent=streak; const b=document.getElementById('dStreakBig'); if(b)b.textContent=streak; const l=document.getElementById('dLogged'); if(l)l.textContent=(19+(practices-3)); dBuildCal(); const m=document.getElementById('streakTop'); if(m)m.textContent=streak; const m2=document.getElementById('streakBig'); if(m2)m2.textContent=streak; }
+  function dOpenPillar(key){ dCurPillar=key; dCurSeg='videos'; dRenderPillar(); dGoTo('dPillar'); document.querySelectorAll('.dn').forEach(b=>b.classList.toggle('on', b.dataset.d==='dLibrary')); }
+  function dRenderPillar(){ const p=PILLARS[dCurPillar]; document.getElementById('dPillar').innerHTML='<button class="dp-back" onclick="dGoTo(\'dLibrary\')">‹ Library</button><div class="dtitle">'+p.title+'</div><div class="segrow" style="max-width:320px"><div class="seg on" onclick="dSeg(\'videos\',this)">Videos</div><div class="seg" onclick="dSeg(\'music\',this)">Music</div></div><div id="dPillarBody" style="max-width:560px"></div>'; dRenderPillarBody(); }
+  function dSeg(seg,el){ dCurSeg=seg; document.querySelectorAll('#dPillar .seg').forEach(s=>s.classList.remove('on')); el.classList.add('on'); dRenderPillarBody(); }
+  function dRenderPillarBody(){ const p=PILLARS[dCurPillar]; const items=dCurSeg==='videos'?p.videos:p.music; const isVid=dCurSeg==='videos'; let h=''; items.forEach(it=>{ const tag=it.tag==='free'?'<span class="free">Free</span>':'<span class="lock">Premium</span>'; const mini=(isVid&&it.m!==undefined)?'<span class="rmini"><i style="width:'+it.m+'%"></i></span>':''; let click=''; if(it.tag==='lock')click='onclick="dOpenPremium()"'; else if(!isVid)click='onclick="dPlayTrack(\''+(it.f||'')+'\')"'; h+='<div class="rowcard" '+click+'><div class="thumb '+(isVid?'vid':'aud')+'">'+(isVid?'▶':'♪')+'</div><div style="flex:1"><div class="r1">'+it.t+' '+tag+'</div><div class="r2">'+it.s+'</div></div>'+mini+'</div>'; }); document.getElementById('dPillarBody').innerHTML=h; }
+  function dPlayTrack(f){ if(!f)return; const a=document.getElementById('trackAudio'); a.src=f; a.volume=0.7; a.play().catch(()=>{}); }
+  function dOpenPremium(){ document.getElementById('dPrem').innerHTML='<div class="dprem-card"><button class="prem-close" style="top:16px;right:16px" onclick="dClosePremium()">✕</button><div class="prem-badge">SATORI DAILY · PREMIUM</div><h2 style="font-size:26px;font-weight:800;margin-bottom:12px">Go all-in on the practice</h2><div class="price"><b>$17</b> / month</div><div class="prem-sub">Everything in free, plus the whole Satori library.</div><ul class="feat" style="margin:0 auto 24px"><li><span class="ico">✓</span> The full library — 80+ practices</li><li><span class="ico">✓</span> Every guided meditation, added weekly</li><li><span class="ico">✓</span> Exclusive music, scored by Craig Young</li><li><span class="ico">✓</span> Personalized path · offline · no ads</li></ul><button class="cta lime wide">Start 7-day free trial</button><div class="prem-note">Then $17/mo · cancel anytime</div><div class="prem-or">— or go deeper —</div><a class="dojo-link" href="https://satorimethod.com" target="_blank" rel="noopener">Join the Qigong Dojo → the full Satori world ↗</a></div>'; document.getElementById('dPrem').classList.add('show'); }
+  function dClosePremium(){ document.getElementById('dPrem').classList.remove('show'); }
+</script>
+</body>
+</html>

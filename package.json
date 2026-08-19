@@ -1,0 +1,9 @@
+{
+  "name": "satori-daily-demo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Satori Daily — concept demo (Craig x Tristan)",
+  "scripts": {
+    "start": "node server.js"
+  }
+}
