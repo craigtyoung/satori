@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Satori Daily — Mockup</title>
 <style>
   :root{
@@ -12,12 +12,17 @@
     --cream:#f5f2ea; --muted:#a7a2b0; --muted-2:#726d7d; --ok:#a6d93f;
   }
   *{box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent;}
-  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; margin:0;
     background:radial-gradient(1100px 620px at 50% 8%, rgba(194,31,67,.30) 0%, transparent 58%),radial-gradient(800px 500px at 85% 108%, rgba(150,22,66,.22) 0%, transparent 55%),var(--navy-0);
-    min-height:100vh; color:var(--cream); display:flex; flex-direction:column; align-items:center; gap:20px; padding:40px 16px 60px;}
-  .stage-label{text-align:center; color:var(--muted); font-size:13px; letter-spacing:.14em; text-transform:uppercase;} .stage-label b{color:var(--gold); font-weight:600;}
-  .phone{width:390px; max-width:100%; height:800px; position:relative; background:var(--navy-0); border-radius:44px; border:1px solid var(--line); box-shadow:0 40px 90px -30px rgba(0,0,0,.8), inset 0 1px 0 rgba(255,255,255,.04); overflow:hidden;}
-  .notch{position:absolute; top:0; left:50%; transform:translateX(-50%); width:150px; height:26px; background:var(--navy-0); border-radius:0 0 18px 18px; z-index:40;}
+    min-height:100dvh; color:var(--cream);}
+  #mobileStage{position:fixed; inset:0; z-index:1;}
+  .phone{position:relative; width:100%; height:100%; background:var(--navy-0); overflow:hidden;}
+  .notch{display:none;}
+  @media (min-width:900px){
+    body{display:flex; justify-content:center; align-items:flex-start; padding:30px 20px;}
+    #mobileStage{display:none;}
+    #desktopStage{display:flex; width:100%; justify-content:center;}
+  }
   .layer{position:absolute; inset:0; display:none;} .layer.active{display:block; animation:fade .35s ease both;}
   @keyframes fade{from{opacity:0;}to{opacity:1;}}
   .scroll{overflow-y:auto; height:100%; padding:52px 22px 96px; scrollbar-width:none;} .scroll::-webkit-scrollbar{display:none;}
@@ -138,7 +143,7 @@
   .prem-note{font-size:11px; color:var(--muted-2); margin-top:12px;} .prem-or{font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted-2); margin:28px 0 16px;}
   .dojo-link{display:inline-flex; align-items:center; gap:8px; text-decoration:none; color:#fff; font-size:13px; font-weight:700; background:linear-gradient(180deg,var(--orange),var(--orange-soft)); padding:13px 22px; border-radius:999px; box-shadow:0 10px 26px -8px rgba(232,130,60,.5);}
   .prem-free{font-size:12px; color:var(--muted-2); line-height:1.5; max-width:300px; margin:26px auto 0;}
-  .nav{position:absolute; bottom:0; left:0; right:0; height:74px; background:rgba(8,8,11,.85); backdrop-filter:blur(16px); border-top:1px solid var(--line); display:flex; align-items:center; justify-content:space-around; padding-bottom:8px; z-index:30;}
+  .nav{position:absolute; bottom:0; left:0; right:0; min-height:74px; background:rgba(8,8,11,.85); backdrop-filter:blur(16px); border-top:1px solid var(--line); display:flex; align-items:center; justify-content:space-around; padding-bottom:max(8px, env(safe-area-inset-bottom)); z-index:30;}
   .nav button{background:none; border:0; cursor:pointer; color:var(--muted-2); display:flex; flex-direction:column; align-items:center; gap:4px; font-size:10px; letter-spacing:.03em; padding:6px 10px;} .nav button.active{color:var(--gold);} .nav svg{width:22px; height:22px;}
   .hint{max-width:440px; text-align:center; color:var(--muted-2); font-size:12px; line-height:1.6;} .hint b{color:var(--sage);}
 
@@ -149,7 +154,7 @@
   .devtoggle button.on{background:linear-gradient(180deg,var(--gold),var(--gold-soft)); color:var(--navy-0);}
 
   /* ===== Desktop layout ===== */
-  #desktopStage{width:100%; display:flex; justify-content:center;}
+  #desktopStage{display:none;}
   .deskwin{width:1140px; max-width:100%; min-height:720px; display:flex; background:var(--navy-0); border:1px solid var(--line); border-radius:20px; overflow:visible; box-shadow:0 40px 90px -30px rgba(0,0,0,.8);}
   .dside{width:232px; flex-shrink:0; background:var(--navy-1); border-right:1px solid var(--line); display:flex; flex-direction:column; padding:26px 18px; position:sticky; top:20px; align-self:flex-start; height:calc(100vh - 40px); min-height:660px; border-radius:20px 0 0 20px;}
   .dlogo{font-size:16px; font-weight:800; letter-spacing:.22em; cursor:pointer; margin-bottom:34px; padding-left:6px; line-height:1.1;} .dlogo span{color:var(--gold);} .dlogo em{display:block; font-size:9.5px; letter-spacing:.34em; color:var(--muted-2); font-style:normal; margin-top:5px;}
@@ -211,14 +216,6 @@
 </style>
 </head>
 <body>
-  <div class="devbar">
-    <div class="devtoggle">
-      <button id="tglMobile" class="on" onclick="setDevice('mobile')">Mobile</button>
-      <button id="tglDesktop" onclick="setDevice('desktop')">Desktop</button>
-    </div>
-    <div class="stage-label">Satori <b>Daily</b> &nbsp;—&nbsp; concept mockup</div>
-  </div>
-
   <div id="mobileStage">
   <div class="phone">
     <div class="notch"></div>
@@ -550,6 +547,11 @@
     const feed=document.getElementById('feed');
     let t; feed.addEventListener('scroll',()=>{ clearTimeout(t); t=setTimeout(onFeedScroll,90); });
     document.addEventListener('keydown',e=>{ if(!document.getElementById('todayLayer').classList.contains('active'))return; if(document.getElementById('practiceLayer').classList.contains('show'))return; if(e.key==='ArrowRight')scrollFeed(1); if(e.key==='ArrowLeft')scrollFeed(-1); });
+    // auto-detect device — desktop layout renders only at >=900px
+    const mq=window.matchMedia('(min-width:900px)');
+    function initDesktop(){ if(!dRendered){ dRenderAll(); dRendered=true; } dGoTo('dToday'); }
+    if(mq.matches) initDesktop();
+    mq.addEventListener('change', e=>{ if(e.matches){ initDesktop(); } else { clearInterval(dHeroTimer); document.querySelectorAll('#desktopStage video').forEach(v=>v.pause()); } });
   });
 
   /* ===== Desktop layout ===== */
