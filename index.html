@@ -246,6 +246,8 @@
   .med-star{position:relative; z-index:2; color:#ffd873; font-size:22px; text-shadow:0 0 10px rgba(255,216,115,.7);}
   .med-name{font-size:10.5px; color:var(--muted); line-height:1.2; max-width:74px;} .med.mastered .med-name{color:var(--cream);}
   .med-rep{font-size:9px; color:var(--gold); font-weight:600;}
+  .emap-wrap{max-width:360px; margin:8px auto 4px;} .emap{width:100%; height:auto; display:block;}
+  .emap-cap{text-align:center; font-size:12px; color:var(--muted-2); max-width:330px; margin:0 auto 24px; line-height:1.5;}
   .celebrate{position:fixed; inset:0; z-index:80; display:none; align-items:center; justify-content:center; background:rgba(8,8,11,.9); backdrop-filter:blur(10px); padding:30px; text-align:center; cursor:pointer;}
   .celebrate.show{display:flex; animation:fade .3s ease both;}
   .celeb-card{max-width:340px;}
@@ -694,6 +696,36 @@
     document.getElementById('dLibrary').innerHTML=h;
   }
   function dMusicRow(t,s,tag,f){ const tg=tag==='free'?'<span class="free">Free</span>':'<span class="lock">Premium</span>'; const click=tag==='lock'?'dOpenPremium()':'dPlayTrack(\''+f+'\',\''+t.replace(/\x27/g,"")+'\',\''+s.replace(/\x27/g,"")+'\')'; return '<div class="rowcard" style="max-width:540px" onclick="'+click+'"><div class="thumb aud">♪</div><div><div class="r1">'+t+' '+tg+'</div><div class="r2">'+s+'</div></div></div>'; }
+  /* ===== Satori Energy Map (radial progress mandala) ===== */
+  const pillarMastered=(p)=>MOVES.filter(m=>m.pillar===p&&m.mastered).length;
+  const pillarTotal=(p)=>MOVES.filter(m=>m.pillar===p).length;
+  function energyMapSVG(){
+    const cpos=[[142,142],[142,258],[258,142],[258,258]];
+    const cdata=[{n:'Physical Body',p:'Qigong',c:'#a6d93f'},{n:'Energy Body',p:'Breath',c:'#4fd0c0'},{n:'Conscious Mind',p:'Mindset',c:'#e8b84a'},{n:'Subconscious Mind',p:'Meditation',c:'#b98cff'}];
+    const areas=['Finances','Family','Parenting','Environments','Romance','Intimacy','Recreation','Adventure','Community','Friendship','Charity','Contribution'];
+    const litAreas=Math.min(12, currentElementIdx()*3);
+    let s='<svg viewBox="0 0 400 400" class="emap"><defs>';
+    s+='<radialGradient id="spirit"><stop offset="0%" stop-color="#ffffff"/><stop offset="35%" stop-color="#ffe9a8"/><stop offset="100%" stop-color="#e8823c" stop-opacity="0"/></radialGradient>';
+    s+='<filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>';
+    s+='<circle cx="200" cy="200" r="158" fill="none" stroke="#2a2733"/><circle cx="200" cy="200" r="96" fill="none" stroke="#221f2b"/>';
+    for(let i=0;i<12;i++){ const a=(-90+i*30)*Math.PI/180, x=200+158*Math.cos(a), y=200+158*Math.sin(a), lit=i<litAreas;
+      s+='<line x1="200" y1="200" x2="'+x.toFixed(1)+'" y2="'+y.toFixed(1)+'" stroke="#221f2b" stroke-dasharray="2 5"/>';
+      s+='<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="11" fill="#141019" stroke="'+(lit?'#a6d93f':'#2a2733')+'" stroke-width="'+(lit?2:1)+'"'+(lit?' filter="url(#glow)"':'')+'/>';
+      const lx=200+182*Math.cos(a), ly=200+182*Math.sin(a);
+      s+='<text x="'+lx.toFixed(1)+'" y="'+ly.toFixed(1)+'" font-size="8" fill="'+(lit?'#cfccd6':'#565062')+'" text-anchor="middle" dominant-baseline="middle">'+areas[i]+'</text>';
+    }
+    cdata.forEach((c,i)=>{ const x=cpos[i][0], y=cpos[i][1], act=Math.min(1, pillarMastered(c.p)/Math.max(1,pillarTotal(c.p))), op=(0.28+act*0.72).toFixed(2);
+      s+='<circle cx="'+x+'" cy="'+y+'" r="26" fill="'+c.c+'" fill-opacity="'+(0.1+act*0.32).toFixed(2)+'" stroke="'+c.c+'" stroke-opacity="'+op+'" stroke-width="2"'+(act>0.25?' filter="url(#glow)"':'')+'/>';
+      s+='<text x="'+x+'" y="'+(y-2)+'" font-size="8" fill="#f4eee2" fill-opacity="'+op+'" text-anchor="middle">'+c.n.split(" ")[0]+'</text><text x="'+x+'" y="'+(y+8)+'" font-size="8" fill="#f4eee2" fill-opacity="'+op+'" text-anchor="middle">'+c.n.split(" ")[1]+'</text>';
+    });
+    s+='<text x="112" y="204" font-size="12" fill="#8ea38f" text-anchor="middle" letter-spacing="2" font-weight="700">BODY</text>';
+    s+='<text x="288" y="204" font-size="12" fill="#8ea38f" text-anchor="middle" letter-spacing="2" font-weight="700">MIND</text>';
+    s+='<circle cx="200" cy="200" r="42" fill="url(#spirit)"/><circle cx="200" cy="200" r="6.5" fill="#fff" filter="url(#glow)"/>';
+    s+='<text x="200" y="232" font-size="7.5" fill="#ffe9a8" text-anchor="middle" letter-spacing="1.5">SPIRIT</text></svg>';
+    return s;
+  }
+  function energyMapHTML(){ return '<div class="eyebrow2" style="text-align:center">Your Energy Map</div><div class="emap-wrap">'+energyMapSVG()+'</div><div class="emap-cap">Your practice lights the centres of body &amp; mind. As your energy grows, the areas of your life begin to open.</div>'; }
+
   /* shared progress builders (level card + mastery board) */
   function progLevelHTML(){
     const idx=currentElementIdx(), e=ELEMENTS[idx], n=masteredCount(), pct=energyPct();
@@ -714,7 +746,7 @@
   function renderProgressM(){
     const el=document.getElementById('progMBody'); if(!el) return;
     el.innerHTML='<div class="brand"><div class="word" onclick="goHome()">SAT<span>O</span>RI</div><div class="badge">Progress</div></div>'
-      +progLevelHTML()+progBoardHTML()
+      +energyMapHTML()+progLevelHTML()+progBoardHTML()
       +'<div class="eyebrow2">This journey</div>'
       +'<div class="statline"><span>🔥 Day streak</span><span id="streakBig">'+streak+'</span></div>'
       +'<div class="statline"><span>Practices logged</span><span id="loggedStat">'+(19+(practices-3))+'</span></div>'
@@ -724,6 +756,7 @@
   }
   function dRenderProgress(){
     document.getElementById('dProgress').innerHTML='<div class="dhead">Progress</div><div class="dtitle">Your practice</div>'
+      +'<div style="max-width:440px;margin-bottom:26px">'+energyMapHTML()+'</div>'
       +'<div style="max-width:660px">'+progLevelHTML()+'</div>'
       +'<div style="max-width:820px;margin-top:24px">'+progBoardHTML()+'</div>'
       +'<div class="dstat-row" style="margin-top:26px">'
