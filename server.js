@@ -21,6 +21,8 @@ http.createServer((req, res) => {
   fs.stat(fp, (err, st) => {
     if (err || !st.isFile()) { res.writeHead(404); return res.end('Not found'); }
     const type = types[path.extname(fp).toLowerCase()] || 'application/octet-stream';
+    // HTML/manifest always revalidate so redeploys show immediately; media can cache
+    const cache = /html|manifest|json/.test(type) ? 'no-store, must-revalidate' : 'public, max-age=3600';
     const range = req.headers.range;
     if (range) {
       const m = /bytes=(\d*)-(\d*)/.exec(range) || [];
@@ -31,11 +33,12 @@ http.createServer((req, res) => {
         'Content-Type': type,
         'Content-Range': `bytes ${start}-${end}/${st.size}`,
         'Accept-Ranges': 'bytes',
-        'Content-Length': end - start + 1
+        'Content-Length': end - start + 1,
+        'Cache-Control': cache
       });
       fs.createReadStream(fp, { start, end }).pipe(res);
     } else {
-      res.writeHead(200, { 'Content-Type': type, 'Content-Length': st.size, 'Accept-Ranges': 'bytes' });
+      res.writeHead(200, { 'Content-Type': type, 'Content-Length': st.size, 'Accept-Ranges': 'bytes', 'Cache-Control': cache });
       fs.createReadStream(fp).pipe(res);
     }
   });
