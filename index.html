@@ -248,6 +248,28 @@
   .med-rep{font-size:9px; color:var(--gold); font-weight:600;}
   .emap-wrap{max-width:360px; margin:8px auto 4px;} .emap{width:100%; height:auto; display:block;}
   .emap-cap{text-align:center; font-size:12px; color:var(--muted-2); max-width:330px; margin:0 auto 24px; line-height:1.5;}
+  /* ===== Journey bar + tier ladder (Progress) ===== */
+  .jbar-wrap{margin:2px 0 22px;}
+  .jbar-wrap.bleed{margin:2px -22px 22px;}
+  .jbar-head{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:10px; padding:0 2px;}
+  .jbar-wrap.bleed .jbar-head,.jbar-wrap.bleed .jbar-foot{padding:0 22px;}
+  .jbar-title{font-size:19px; font-weight:800; letter-spacing:.01em;}
+  .jbar-count{font-size:12px; color:var(--muted);}
+  .jbar{height:14px; background:rgba(255,255,255,.08); overflow:hidden; border-radius:8px;}
+  .jbar-wrap.bleed .jbar{border-radius:0;}
+  .jbar i{display:block; height:100%; transition:width .7s ease;}
+  .jbar-foot{font-size:12px; color:var(--muted); margin-top:10px; padding:0 2px;} .jbar-foot b{color:var(--cream); font-weight:700;}
+  .tiers{display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:24px;}
+  .tier{display:flex; flex-direction:column; align-items:center; gap:6px; opacity:.4; flex-shrink:0; width:60px;}
+  .tier.on{opacity:1;} .tier.past{opacity:.8;}
+  .tier-dot{width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; background:var(--navy-2); border:1px solid var(--line); color:var(--ec);}
+  .tier.on .tier-dot{border-color:var(--ec); box-shadow:0 0 12px -2px var(--ec); background:var(--ec); color:var(--navy-0); font-weight:800;}
+  .tier.past .tier-dot{border-color:var(--ec);}
+  .tier-n{font-size:10px; color:var(--muted); text-align:center; line-height:1.2;}
+  .tier.on .tier-n{color:var(--cream); font-weight:600;}
+  .tier-link{flex:1; height:1px; background:var(--line); margin:13px 2px 0;}
+  .med{cursor:pointer;} .med .med-ring{transition:transform .15s ease, border-color .15s;} .med:hover .med-ring{transform:translateY(-2px); border-color:rgba(166,217,63,.6);}
+  .board-foot{font-size:12px; color:var(--muted-2); text-align:center; margin:-6px 0 22px; line-height:1.55;} .board-foot a{color:var(--sage); text-decoration:none;} .board-foot a:hover{color:var(--gold);}
   .celebrate{position:fixed; inset:0; z-index:80; display:none; align-items:center; justify-content:center; background:rgba(8,8,11,.9); backdrop-filter:blur(10px); padding:30px; text-align:center; cursor:pointer;}
   .celebrate.show{display:flex; animation:fade .3s ease both;}
   .celeb-card{max-width:340px;}
@@ -454,15 +476,15 @@
     {t:'Vital Energy Priming',eye:'Mindset · Training',chips:['Mindset','7:00'],m:0,tag:'lock',vid:'',teaser:'dragon-wings.mp4',grad:'linear-gradient(160deg,#3a2a20,#231512)',desc:'Prime your state for the day ahead. Unlock with Premium.',cues:[]}
   ];
 
-  /* ===== Mastery engine (Five Elements) ===== */
+  /* ===== Mastery engine (rank ladder) ===== */
   const ELEMENTS=[
-    {name:'Wood', tag:'The Spark', glyph:'🌿', color:'#a6d93f', need:0},
-    {name:'Fire', tag:'The Flame', glyph:'🔥', color:'#e8823c', need:3},
-    {name:'Earth', tag:'The Ground', glyph:'⛰️', color:'#d8b24a', need:5},
-    {name:'Metal', tag:'The Edge', glyph:'✦', color:'#c9d2dd', need:7},
-    {name:'Water', tag:'The Flow', glyph:'💧', color:'#5aa9d6', need:11}
+    {name:'Novice', tag:'Beginning the path', color:'#8a94a3', need:0},
+    {name:'Apprentice', tag:'Building the base', color:'#7fae86', need:3},
+    {name:'Practitioner', tag:'Finding the flow', color:'#d8b24a', need:5},
+    {name:'Adept', tag:'Moving with ease', color:'#e8823c', need:7},
+    {name:'Master', tag:'Effortless practice', color:'#ffd873', need:11}
   ];
-  // Demo seed — a user mid-journey (7 mastered → Earth). Live app starts every user at 0 → Wood.
+  // Demo seed — a user mid-journey (6 mastered → Practitioner). Live app starts every user at 0 → Novice.
   const MOVES=[
     {t:'Dragon Wings', pillar:'Qigong', reps:7, mastered:true},
     {t:'Rooting — Standing Like a Tree', pillar:'Qigong', reps:6, mastered:true},
@@ -490,7 +512,7 @@
   function refreshProgress(){ renderProgressM(); if(dRendered) dRenderProgress(); }
   function masterMove(t){ const m=moveByTitle(t); if(!m||m.mastered) return; const prev=currentElementIdx(); m.mastered=true; const now=currentElementIdx(); refreshProgress();
     let html='<div class="celeb-star">🌟</div><div class="celeb-h">Move mastered</div><div class="celeb-sub">'+t+'</div>';
-    if(now>prev){ const e=ELEMENTS[now]; html+='<div class="celeb-level" style="color:'+e.color+'">'+e.glyph+' You’ve reached '+e.name+' — '+e.tag+'</div>'; }
+    if(now>prev){ const e=ELEMENTS[now]; html+='<div class="celeb-level" style="color:'+e.color+'">You’ve reached '+e.name+' — '+e.tag+'</div>'; }
     showCelebrate(html);
   }
   function masterCurrent(){ masterMove(TODAY[curIdx].t); const a=document.getElementById('masterBtn'); if(a)a.style.display='none'; const b=document.getElementById('dMasterBtn'); if(b)b.style.display='none'; }
@@ -573,7 +595,7 @@
   function pracToggle(e){ if(e)e.stopPropagation(); const v=document.getElementById('pracVideo'); if(!v.currentSrc) return; if(v.paused){v.play();} else {v.pause();} }
   function pracRestart(){ const v=document.getElementById('pracVideo'); if(!v.currentSrc) return; v.currentTime=0; v.play(); }
   function npToggle(){ const a=document.getElementById('trackAudio'), bar=document.getElementById('nowbar'), pp=document.getElementById('npPP'); if(a.paused){ a.play().catch(()=>{}); pp.textContent='⏸'; bar.classList.remove('paused'); } else { a.pause(); pp.textContent='▶'; bar.classList.add('paused'); } }
-  function closePractice(){ const v=document.getElementById('pracVideo'); if(v && !v.paused) v.pause(); const pl=document.getElementById('practiceLayer'); pl.classList.remove('show','focus'); document.getElementById('infoSheet').classList.remove('show'); document.getElementById('doneWrap').classList.remove('show'); if(document.getElementById('todayLayer').classList.contains('active')) setActive(curIdx,true); }
+  function closePractice(){ const v=document.getElementById('pracVideo'); if(v && !v.paused) v.pause(); const pl=document.getElementById('practiceLayer'); pl.classList.remove('show','focus'); document.getElementById('infoSheet').classList.remove('show'); document.getElementById('doneWrap').classList.remove('show'); if(_tmpMove){ TODAY.pop(); _tmpMove=false; } if(document.getElementById('todayLayer').classList.contains('active')) setActive(curIdx,true); }
 
   function logCurrent(){
     streak++; practices++; bumpReps(TODAY[curIdx].t);
@@ -726,27 +748,42 @@
   }
   function energyMapHTML(){ return '<div class="eyebrow2" style="text-align:center">Your Energy Map</div><div class="emap-wrap">'+energyMapSVG()+'</div><div class="emap-cap">Your practice lights the centres of body &amp; mind. As your energy grows, the areas of your life begin to open.</div>'; }
 
-  /* shared progress builders (level card + mastery board) */
-  function progLevelHTML(){
+  /* shared progress builders (journey bar + tier ladder + mastery board) */
+  function progJourneyHTML(bleed){
     const idx=currentElementIdx(), e=ELEMENTS[idx], n=masteredCount(), pct=energyPct();
     const next = idx<ELEMENTS.length-1 ? ELEMENTS[idx+1] : null;
-    const path=ELEMENTS.map((el,i)=>{ const st=i<idx?'past':(i===idx?'on':''); return '<div class="elem '+st+'" style="--ec:'+el.color+'"><div class="elem-g">'+el.glyph+'</div><div class="elem-n">'+el.name+'</div></div>'; }).join('<div class="elem-link"></div>');
-    return '<div class="level-card">'
-      +'<div class="level-top"><div class="level-badge" style="--ec:'+e.color+'">'+e.glyph+'</div><div><div class="level-name">'+e.name+' <span>· '+e.tag+'</span></div><div class="level-sub">'+n+' moves mastered</div></div></div>'
-      +'<div class="energy-bar"><i style="width:'+pct+'%; background:linear-gradient(90deg,'+e.color+','+(next?next.color:e.color)+')"></i></div>'
-      +'<div class="energy-lbl">'+(next?('<b>'+(next.need-n)+'</b> more to '+next.glyph+' '+next.name):'Highest element reached ✦')+'</div>'
-      +'<div class="elems-path">'+path+'</div></div>';
+    const foot = next ? ('<b>'+(next.need-n)+'</b> more to reach '+next.name) : 'Master — highest rank reached';
+    return '<div class="jbar-wrap'+(bleed?' bleed':'')+'">'
+      +'<div class="jbar-head"><span class="jbar-title" style="color:'+e.color+'">'+e.name+'</span><span class="jbar-count">'+n+' moves mastered</span></div>'
+      +'<div class="jbar"><i style="width:'+pct+'%; background:linear-gradient(90deg,'+e.color+','+(next?next.color:e.color)+')"></i></div>'
+      +'<div class="jbar-foot">'+foot+'</div></div>';
+  }
+  function progTiersHTML(){
+    const idx=currentElementIdx();
+    return '<div class="tiers">'+ELEMENTS.map((el,i)=>{ const st=i<idx?'past':(i===idx?'on':''); return '<div class="tier '+st+'" style="--ec:'+el.color+'"><div class="tier-dot">'+(i+1)+'</div><div class="tier-n">'+el.name+'</div></div>'; }).join('<div class="tier-link"></div>')+'</div>';
   }
   function progBoardHTML(){
     const total=MOVES.length, done=masteredCount();
-    const cells=MOVES.map(m=>{ const cls=m.mastered?'med mastered':(m.reps>0?'med prog':'med'); const star=m.mastered?'<div class="med-star">★</div>':''; const rep=(!m.mastered&&m.reps>0)?'<div class="med-rep">'+m.reps+'×</div>':''; const fill=(!m.mastered&&m.reps>0)?'<i style="height:'+Math.min(100,Math.round(m.reps/3*100))+'%"></i>':'';
-      return '<div class="'+cls+'"><div class="med-ring">'+fill+star+'</div><div class="med-name">'+m.t.split(' — ')[0]+'</div>'+rep+'</div>'; }).join('');
-    return '<div class="eyebrow2" style="display:flex;justify-content:space-between;align-items:center"><span>Moves mastered</span><span style="color:var(--gold);letter-spacing:0;text-transform:none">'+done+' / '+total+'</span></div><div class="board">'+cells+'</div>';
+    const cells=MOVES.map(m=>{ const cls=m.mastered?'med mastered':(m.reps>0?'med prog':'med'); const star=m.mastered?'<div class="med-star">★</div>':''; const rep=(!m.mastered&&m.reps>0)?'<div class="med-rep">'+m.reps+'×</div>':''; const fill=(!m.mastered&&m.reps>0)?'<i style="height:'+Math.min(100,Math.round(m.reps/3*100))+'%"></i>':''; const safe=m.t.replace(/'/g,"\\'");
+      return '<div class="'+cls+'" onclick="openMoveByTitle(\''+safe+'\')"><div class="med-ring">'+fill+star+'</div><div class="med-name">'+m.t.split(' — ')[0]+'</div>'+rep+'</div>'; }).join('');
+    return '<div class="eyebrow2" style="display:flex;justify-content:space-between;align-items:center"><span>Moves mastered</span><span style="color:var(--gold);letter-spacing:0;text-transform:none">'+done+' / '+total+'</span></div><div class="board">'+cells+'</div>'
+      +'<div class="board-foot">Each move is a quick way to learn one practice. <a href="https://satorimethod.com" target="_blank" rel="noopener">String them into routines in the Satori Dojo ↗</a></div>';
+  }
+  /* Tap a move in the board → open that move. Real moves route to their practice; others open a light view. */
+  let _tmpMove=false;
+  function openMoveByTitle(t){
+    const desktop=window.matchMedia('(min-width:900px)').matches;
+    let i=TODAY.findIndex(p=>p.t===t);
+    if(i<0){ const m=moveByTitle(t)||{pillar:'Qigong',reps:0,mastered:false};
+      TODAY.push({t:t,eye:m.pillar+' · Satori move',chips:[m.pillar,(m.mastered?'Mastered':'In progress')],m:(m.mastered?100:Math.min(90,m.reps*25)),tag:'free',vid:'',grad:'linear-gradient(160deg,#22314a,#141d16)',desc:'One of your Satori moves. Open the Dojo for the full guided version and to weave it into a routine.',cues:[]});
+      i=TODAY.length-1; _tmpMove=true;
+    }
+    if(desktop) dOpenPractice(i); else openPractice(i);
   }
   function renderProgressM(){
     const el=document.getElementById('progMBody'); if(!el) return;
     el.innerHTML='<div class="brand"><div class="word" onclick="goHome()">SAT<span>O</span>RI</div><div class="badge">Progress</div></div>'
-      +energyMapHTML()+progLevelHTML()+progBoardHTML()
+      +progJourneyHTML(true)+progTiersHTML()+progBoardHTML()
       +'<div class="eyebrow2">This journey</div>'
       +'<div class="statline"><span>🔥 Day streak</span><span id="streakBig">'+streak+'</span></div>'
       +'<div class="statline"><span>Practices logged</span><span id="loggedStat">'+(19+(practices-3))+'</span></div>'
@@ -756,9 +793,9 @@
   }
   function dRenderProgress(){
     document.getElementById('dProgress').innerHTML='<div class="dhead">Progress</div><div class="dtitle">Your practice</div>'
-      +'<div style="max-width:440px;margin-bottom:26px">'+energyMapHTML()+'</div>'
-      +'<div style="max-width:660px">'+progLevelHTML()+'</div>'
-      +'<div style="max-width:820px;margin-top:24px">'+progBoardHTML()+'</div>'
+      +'<div style="max-width:760px;margin-bottom:6px">'+progJourneyHTML(false)+'</div>'
+      +'<div style="max-width:600px;margin-bottom:20px">'+progTiersHTML()+'</div>'
+      +'<div style="max-width:820px">'+progBoardHTML()+'</div>'
       +'<div class="dstat-row" style="margin-top:26px">'
       +'<div class="dstat"><div class="n">'+streak+'</div><div class="l">day streak</div></div>'
       +'<div class="dstat"><div class="n">'+masteredCount()+'</div><div class="l">moves mastered</div></div>'
@@ -808,7 +845,7 @@
   function dPracRestart(){ const v=document.getElementById('dPracVid'); if(!v||!v.currentSrc)return; v.currentTime=0; v.play(); }
   function dDoneHTML(){ return '<div style="text-align:center;max-width:320px"><div class="seal"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#a6d93f" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div><h3>Day <span id="dDoneDay">'+(streak+1)+'</span>. Logged.</h3><p id="dDoneP">Nice — practice logged.</p><div class="conf-q">How confident with this one?</div><div class="conf-row" id="dConfRow"><div class="conf" onclick="dSetConf(this,25)">Learning</div><div class="conf" onclick="dSetConf(this,50)">Getting it</div><div class="conf" onclick="dSetConf(this,75)">Confident</div><div class="conf" onclick="dSetConf(this,100)">Got it</div></div><button class="cta lime" id="dMasterBtn" style="display:none;max-width:280px;margin:0 auto 12px" onclick="masterCurrent()">★ I\'ve mastered this move</button><a class="learn" href="https://satorimethod.com" target="_blank" rel="noopener">Learn more → join the Satori Dojo ↗</a></div>'; }
   function dPracToggle(e){ if(e)e.stopPropagation(); const v=document.getElementById('dPracVid'); if(!v)return; if(v.paused){v.play();}else{v.pause();} }
-  function dClosePractice(){ const v=document.getElementById('dPracVid'); if(v&&!v.paused)v.pause(); document.getElementById('dPrac').classList.remove('show'); }
+  function dClosePractice(){ const v=document.getElementById('dPracVid'); if(v&&!v.paused)v.pause(); document.getElementById('dPrac').classList.remove('show'); if(_tmpMove){ TODAY.pop(); _tmpMove=false; } }
   function dLog(){ streak++; practices++; bumpReps(TODAY[curIdx].t); dSyncStreak(); document.getElementById('dDoneDay').textContent=streak+1; document.getElementById('dDoneP').textContent='Nice — '+TODAY[curIdx].t+', logged.'; document.querySelectorAll('#dConfRow .conf').forEach(c=>c.classList.remove('sel')); const mb=document.getElementById('dMasterBtn'); if(mb) mb.style.display=isMasterReady(moveByTitle(TODAY[curIdx].t))?'block':'none'; const v=document.getElementById('dPracVid'); if(v&&!v.paused)v.pause(); document.getElementById('dDone').classList.add('show'); refreshProgress(); }
   function dSetConf(el,val){ document.querySelectorAll('#dConfRow .conf').forEach(c=>c.classList.remove('sel')); el.classList.add('sel'); TODAY[curIdx].m=val; const f=document.getElementById('dMastery'); if(f)f.style.width=val+'%'; setTimeout(()=>{ dClosePractice(); dRenderToday(); dRenderProgress(); dGoTo('dProgress'); },520); }
   function dSyncStreak(){ const a=document.getElementById('dStreak'); if(a)a.textContent=streak; const b=document.getElementById('dStreakBig'); if(b)b.textContent=streak; const l=document.getElementById('dLogged'); if(l)l.textContent=(19+(practices-3)); dBuildCal(); const m=document.getElementById('streakTop'); if(m)m.textContent=streak; const m2=document.getElementById('streakBig'); if(m2)m2.textContent=streak; }
