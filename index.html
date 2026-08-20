@@ -28,11 +28,6 @@
   #mobileStage{position:fixed; inset:0; z-index:1;}
   .phone{position:relative; width:100%; height:100%; background:var(--navy-0); overflow:hidden;}
   .notch{display:none;}
-  @media (min-width:900px){
-    body{display:flex; justify-content:center; align-items:flex-start; padding:30px 20px;}
-    #mobileStage{display:none;}
-    #desktopStage{display:flex; width:100%; justify-content:center;}
-  }
   .layer{position:absolute; inset:0; display:none;} .layer.active{display:block; animation:fade .35s ease both;}
   @keyframes fade{from{opacity:0;}to{opacity:1;}}
   .scroll{overflow-y:auto; height:100%; padding:52px 22px 96px; scrollbar-width:none;} .scroll::-webkit-scrollbar{display:none;}
@@ -136,7 +131,9 @@
   .rmini{width:30px; height:5px; border-radius:3px; background:rgba(255,255,255,.12); overflow:hidden; margin-left:auto; flex-shrink:0;} .rmini i{display:block; height:100%; background:linear-gradient(90deg,var(--gold),var(--orange));}
   .back{display:inline-flex; align-items:center; gap:7px; color:var(--muted); font-size:13px; cursor:pointer; margin-bottom:16px; background:none; border:0;} .back:hover{color:var(--gold);}
   .segrow{display:flex; gap:8px; margin-bottom:18px;} .seg{flex:1; text-align:center; padding:9px; border-radius:10px; border:1px solid var(--line); background:var(--navy-2); font-size:12.5px; font-weight:600; color:var(--muted); cursor:pointer;} .seg.on{background:rgba(166,217,63,.12); border-color:rgba(166,217,63,.4); color:var(--gold);}
-  .nowbar{position:absolute; left:14px; right:14px; bottom:88px; z-index:36; display:none; align-items:center; gap:11px; background:rgba(24,23,31,.94); backdrop-filter:blur(14px); border:1px solid var(--line); border-radius:14px; padding:10px 13px;} .nowbar.show{display:flex; animation:fade .3s ease both;}
+  .nowbar{position:fixed; left:50%; transform:translateX(-50%); width:min(420px, calc(100% - 28px)); bottom:88px; z-index:60; display:none; align-items:center; gap:11px; background:rgba(24,23,31,.96); backdrop-filter:blur(14px); border:1px solid var(--line); border-radius:14px; padding:10px 13px; box-shadow:0 14px 40px -12px rgba(0,0,0,.7);} .nowbar.show{display:flex; animation:fade .3s ease both;}
+  .np-pp{color:var(--gold); cursor:pointer; font-size:16px; padding:2px 8px;} .nowbar.paused .np-eq span{animation-play-state:paused; opacity:.5;}
+  .mediactl{display:flex; gap:8px; margin-bottom:10px;} .mediactl button{flex:1; background:rgba(24,23,31,.8); border:1px solid var(--line); color:var(--cream); font-size:12.5px; font-weight:600; padding:11px; border-radius:12px; cursor:pointer; backdrop-filter:blur(8px);} .mediactl button:hover{border-color:rgba(166,217,63,.45); color:var(--gold);}
   .np-eq{display:flex; align-items:flex-end; gap:3px; height:18px; width:22px;} .np-eq span{flex:1; background:var(--gold); border-radius:2px; animation:bounce 1s ease-in-out infinite;} .np-eq span:nth-child(2){animation-delay:.2s;} .np-eq span:nth-child(3){animation-delay:.4s;}
   @keyframes bounce{0%,100%{height:25%;}50%{height:92%;}}
   .np1{font-size:12.5px; font-weight:600;} .np2{font-size:10.5px; color:var(--muted-2);} .np-x{margin-left:auto; color:var(--muted); cursor:pointer; font-size:16px; padding:0 4px;}
@@ -223,6 +220,12 @@
   .dpc-side{width:360px; flex-shrink:0; padding:34px 30px; display:flex; flex-direction:column; overflow-y:auto; position:relative;} .dpc-side .i-desc{font-size:13.5px; line-height:1.55; color:#cfccd6; margin:8px 0 16px;}
   .dprac-x{position:absolute; top:22px; right:26px; background:rgba(255,255,255,.08); border:1px solid var(--line); color:var(--cream); width:32px; height:32px; border-radius:50%; cursor:pointer; font-size:14px;}
   .dprac-arrow{width:46px; height:46px; border-radius:50%; background:rgba(255,255,255,.08); border:1px solid var(--line); color:var(--cream); cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:22px; margin:0 22px; flex-shrink:0;} .dprac-arrow:hover{background:rgba(255,255,255,.16);}
+  /* ===== Responsive device switch (must be last so it wins) ===== */
+  @media (min-width:900px){
+    body{display:flex; justify-content:center; align-items:flex-start; padding:30px 20px;}
+    #mobileStage{display:none !important;}
+    #desktopStage{display:flex !important; width:100%; justify-content:center;}
+  }
 </style>
 </head>
 <body>
@@ -264,6 +267,7 @@
       </div>
       <div class="center-play hidden" id="pracPlay" onclick="pracToggle(event)"><svg width="26" height="26" viewBox="0 0 24 24" fill="#12161f"><path d="M8 5v14l11-7z"/></svg></div>
       <div class="prac-bottom" id="pracBottom" style="display:none">
+        <div class="mediactl"><button onclick="pracRestart()">⟲ Restart</button><button id="pracPP" onclick="pracToggle(event)">⏸ Pause</button></div>
         <button class="info-btn" onclick="showInfo()">ⓘ Info &amp; cues</button>
         <button class="cta" onclick="logCurrent()">Log practice</button>
       </div>
@@ -367,9 +371,6 @@
       </div>
     </div>
 
-    <div class="nowbar" id="nowbar"><div class="np-eq"><span></span><span></span><span></span></div><div><div class="np1" id="npTitle">State of Grace</div><div class="np2" id="npSub">Non-guided · Craig Young</div></div><div class="np-x" onclick="stopTrack()">✕</div></div>
-    <audio id="trackAudio" preload="none"></audio>
-
     <nav class="nav">
       <button class="active" data-view="todayLayer" onclick="go(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>Today</button>
       <button data-view="libraryLayer" onclick="go(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="7" height="16" rx="1"/><rect x="14" y="4" width="7" height="16" rx="1"/></svg>Library</button>
@@ -404,6 +405,9 @@
     </div>
   </div>
 
+
+  <div class="nowbar" id="nowbar"><div class="np-eq"><span></span><span></span><span></span></div><div style="flex:1;min-width:0"><div class="np1" id="npTitle">State of Grace</div><div class="np2" id="npSub">Non-guided · Craig Young</div></div><div class="np-pp" id="npPP" onclick="npToggle()">⏸</div><div class="np-x" onclick="stopTrack()">✕</div></div>
+  <audio id="trackAudio" preload="none"></audio>
 
 <script>
   let streak=7, practices=3, curIdx=0, promoTimer=null;
@@ -495,7 +499,9 @@
     else { document.getElementById('pracPlay').classList.remove('hidden'); }
   }
   function showInfo(){ document.getElementById('infoSheet').classList.add('show'); }
-  function pracToggle(e){ e.stopPropagation(); const v=document.getElementById('pracVideo'), b=document.getElementById('pracPlay'); if(!v.currentSrc) return; if(v.paused){v.play(); b.classList.add('hidden');} else {v.pause(); b.classList.remove('hidden');} }
+  function pracToggle(e){ if(e)e.stopPropagation(); const v=document.getElementById('pracVideo'); if(!v.currentSrc) return; if(v.paused){v.play();} else {v.pause();} }
+  function pracRestart(){ const v=document.getElementById('pracVideo'); if(!v.currentSrc) return; v.currentTime=0; v.play(); }
+  function npToggle(){ const a=document.getElementById('trackAudio'), bar=document.getElementById('nowbar'), pp=document.getElementById('npPP'); if(a.paused){ a.play().catch(()=>{}); pp.textContent='⏸'; bar.classList.remove('paused'); } else { a.pause(); pp.textContent='▶'; bar.classList.add('paused'); } }
   function closePractice(){ const v=document.getElementById('pracVideo'); if(v && !v.paused) v.pause(); const pl=document.getElementById('practiceLayer'); pl.classList.remove('show','focus'); document.getElementById('infoSheet').classList.remove('show'); document.getElementById('doneWrap').classList.remove('show'); if(document.getElementById('todayLayer').classList.contains('active')) setActive(curIdx,true); }
 
   function logCurrent(){
@@ -548,12 +554,15 @@
       html+='<div class="rowcard"'+click+'><div class="thumb '+(isVid?'vid':'aud')+'">'+icon+'</div><div style="flex:1"><div class="r1">'+it.t+' '+tag+'</div><div class="r2">'+it.s+'</div></div>'+mini+'</div>'; });
     body.innerHTML=html;
   }
-  function playTrack(t,s,file){ document.getElementById('npTitle').textContent=t; document.getElementById('npSub').textContent=s; document.getElementById('nowbar').classList.add('show'); const a=document.getElementById('trackAudio'); a.src=file||'state-of-grace.mp3'; a.volume=0.7; a.play().catch(()=>{}); }
+  function playTrack(t,s,file){ document.getElementById('npTitle').textContent=t; document.getElementById('npSub').textContent=s; const bar=document.getElementById('nowbar'); bar.classList.add('show'); bar.classList.remove('paused'); document.getElementById('npPP').textContent='⏸'; const a=document.getElementById('trackAudio'); a.src=file||'state-of-grace.mp3'; a.volume=0.7; a.play().catch(()=>{}); }
   function stopTrack(){ document.getElementById('nowbar').classList.remove('show'); document.getElementById('trackAudio').pause(); }
   function buildCal(){ const cal=document.getElementById('cal'); if(!cal) return; cal.innerHTML=''; const done=Math.min(19+(practices-3),21); for(let i=1;i<=28;i++){ const c=document.createElement('div'); c.className='cell'; if(i<=done)c.classList.add('on'); if(i===done)c.classList.add('today'); cal.appendChild(c);} }
 
   document.addEventListener('DOMContentLoaded',()=>{
     renderFeed(); buildCal();
+    const pv=document.getElementById('pracVideo');
+    if(pv){ pv.addEventListener('play',()=>{ document.getElementById('pracPlay').classList.add('hidden'); const b=document.getElementById('pracPP'); if(b)b.textContent='⏸ Pause'; });
+      pv.addEventListener('pause',()=>{ document.getElementById('pracPlay').classList.remove('hidden'); const b=document.getElementById('pracPP'); if(b)b.textContent='▶ Play'; }); }
     const feed=document.getElementById('feed');
     let t; feed.addEventListener('scroll',()=>{ clearTimeout(t); t=setTimeout(onFeedScroll,90); });
     document.addEventListener('keydown',e=>{ if(!document.getElementById('todayLayer').classList.contains('active'))return; if(document.getElementById('practiceLayer').classList.contains('show'))return; if(e.key==='ArrowRight')scrollFeed(1); if(e.key==='ArrowLeft')scrollFeed(-1); });
@@ -614,7 +623,7 @@
     h+=dMusicRow('State of Grace','Non-guided · Craig Young · 7 min','free','state-of-grace.mp3')+dMusicRow('Rise of the Dragons','Non-guided · Craig Young · 8 min','lock','')+dMusicRow('Transcendence','Non-guided · Craig Young · 10 min','lock','');
     document.getElementById('dLibrary').innerHTML=h;
   }
-  function dMusicRow(t,s,tag,f){ const tg=tag==='free'?'<span class="free">Free</span>':'<span class="lock">Premium</span>'; const click=tag==='lock'?'dOpenPremium()':'dPlayTrack(\''+f+'\')'; return '<div class="rowcard" style="max-width:540px" onclick="'+click+'"><div class="thumb aud">♪</div><div><div class="r1">'+t+' '+tg+'</div><div class="r2">'+s+'</div></div></div>'; }
+  function dMusicRow(t,s,tag,f){ const tg=tag==='free'?'<span class="free">Free</span>':'<span class="lock">Premium</span>'; const click=tag==='lock'?'dOpenPremium()':'dPlayTrack(\''+f+'\',\''+t.replace(/\x27/g,"")+'\',\''+s.replace(/\x27/g,"")+'\')'; return '<div class="rowcard" style="max-width:540px" onclick="'+click+'"><div class="thumb aud">♪</div><div><div class="r1">'+t+' '+tg+'</div><div class="r2">'+s+'</div></div></div>'; }
   function dRenderProgress(){
     let h='<div class="dhead">Progress</div><div class="dtitle">Your practice</div><div class="dstat-row">'
       +'<div class="dstat"><div class="n" id="dStreakBig">'+streak+'</div><div class="l">day streak</div></div>'
@@ -658,13 +667,19 @@
       +'<div class="dpc-side"><button class="dprac-x" onclick="dClosePractice()">✕</button>'
       +'<div class="eyebrow" style="text-shadow:none">'+p.eye+'</div><div class="move-name" style="text-shadow:none;font-size:24px">'+p.t+'</div>'
       +'<div class="chips">'+dChips(p.chips)+' <span class="mastery">confidence <span class="mbar"><i id="dMastery" style="width:'+p.m+'%"></i></span></span></div>'
-      +'<div class="i-desc">'+(p.desc||'')+'</div>'+cues+'<div style="flex:1"></div>'+logBtn+'</div></div>'
+      +'<div class="i-desc">'+(p.desc||'')+'</div>'+cues+'<div style="flex:1"></div>'
+      +(src?'<div class="mediactl"><button onclick="dPracRestart()">⟲ Restart</button><button id="dPracPP" onclick="dPracToggle(event)">⏸ Pause</button></div>':'')+logBtn+'</div></div>'
       +'<div class="dprac-arrow" onclick="dPracNav(1)">›</div>'
       +'<div class="done" id="dDone">'+dDoneHTML()+'</div>';
-    const v=document.getElementById('dPracVid'); if(v){ v.muted=false; v.play().then(()=>{document.getElementById('dPracPlay').style.display='none';}).catch(()=>{}); }
+    const v=document.getElementById('dPracVid');
+    if(v){ v.muted=false;
+      v.addEventListener('play',()=>{ const pb=document.getElementById('dPracPlay'); if(pb)pb.style.display='none'; const b=document.getElementById('dPracPP'); if(b)b.textContent='⏸ Pause'; });
+      v.addEventListener('pause',()=>{ const pb=document.getElementById('dPracPlay'); if(pb)pb.style.display='flex'; const b=document.getElementById('dPracPP'); if(b)b.textContent='▶ Play'; });
+      v.play().catch(()=>{}); }
   }
+  function dPracRestart(){ const v=document.getElementById('dPracVid'); if(!v||!v.currentSrc)return; v.currentTime=0; v.play(); }
   function dDoneHTML(){ return '<div style="text-align:center;max-width:320px"><div class="seal"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#a6d93f" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div><h3>Day <span id="dDoneDay">'+(streak+1)+'</span>. Logged.</h3><p id="dDoneP">Nice — practice logged.</p><div class="conf-q">How confident with this one?</div><div class="conf-row" id="dConfRow"><div class="conf" onclick="dSetConf(this,25)">Learning</div><div class="conf" onclick="dSetConf(this,50)">Getting it</div><div class="conf" onclick="dSetConf(this,75)">Confident</div><div class="conf" onclick="dSetConf(this,100)">Got it</div></div><a class="learn" href="https://satorimethod.com" target="_blank" rel="noopener">Learn more → join the Satori Dojo ↗</a></div>'; }
-  function dPracToggle(e){ e.stopPropagation(); const v=document.getElementById('dPracVid'),b=document.getElementById('dPracPlay'); if(!v)return; if(v.paused){v.play();b.style.display='none';}else{v.pause();b.style.display='flex';} }
+  function dPracToggle(e){ if(e)e.stopPropagation(); const v=document.getElementById('dPracVid'); if(!v)return; if(v.paused){v.play();}else{v.pause();} }
   function dClosePractice(){ const v=document.getElementById('dPracVid'); if(v&&!v.paused)v.pause(); document.getElementById('dPrac').classList.remove('show'); }
   function dLog(){ streak++; practices++; dSyncStreak(); document.getElementById('dDoneDay').textContent=streak+1; document.getElementById('dDoneP').textContent='Nice — '+TODAY[curIdx].t+', logged.'; document.querySelectorAll('#dConfRow .conf').forEach(c=>c.classList.remove('sel')); const v=document.getElementById('dPracVid'); if(v&&!v.paused)v.pause(); document.getElementById('dDone').classList.add('show'); }
   function dSetConf(el,val){ document.querySelectorAll('#dConfRow .conf').forEach(c=>c.classList.remove('sel')); el.classList.add('sel'); TODAY[curIdx].m=val; const f=document.getElementById('dMastery'); if(f)f.style.width=val+'%'; setTimeout(()=>{ dClosePractice(); dRenderToday(); dRenderProgress(); dGoTo('dProgress'); },520); }
@@ -672,8 +687,8 @@
   function dOpenPillar(key){ dCurPillar=key; dCurSeg='videos'; dRenderPillar(); dGoTo('dPillar'); document.querySelectorAll('.dn').forEach(b=>b.classList.toggle('on', b.dataset.d==='dLibrary')); }
   function dRenderPillar(){ const p=PILLARS[dCurPillar]; document.getElementById('dPillar').innerHTML='<button class="dp-back" onclick="dGoTo(\'dLibrary\')">‹ Library</button><div class="dtitle">'+p.title+'</div><div class="segrow" style="max-width:320px"><div class="seg on" onclick="dSeg(\'videos\',this)">Videos</div><div class="seg" onclick="dSeg(\'music\',this)">Music</div></div><div id="dPillarBody" style="max-width:560px"></div>'; dRenderPillarBody(); }
   function dSeg(seg,el){ dCurSeg=seg; document.querySelectorAll('#dPillar .seg').forEach(s=>s.classList.remove('on')); el.classList.add('on'); dRenderPillarBody(); }
-  function dRenderPillarBody(){ const p=PILLARS[dCurPillar]; const items=dCurSeg==='videos'?p.videos:p.music; const isVid=dCurSeg==='videos'; let h=''; items.forEach(it=>{ const tag=it.tag==='free'?'<span class="free">Free</span>':'<span class="lock">Premium</span>'; const mini=(isVid&&it.m!==undefined)?'<span class="rmini"><i style="width:'+it.m+'%"></i></span>':''; let click=''; if(it.tag==='lock')click='onclick="dOpenPremium()"'; else if(!isVid)click='onclick="dPlayTrack(\''+(it.f||'')+'\')"'; h+='<div class="rowcard" '+click+'><div class="thumb '+(isVid?'vid':'aud')+'">'+(isVid?'▶':'♪')+'</div><div style="flex:1"><div class="r1">'+it.t+' '+tag+'</div><div class="r2">'+it.s+'</div></div>'+mini+'</div>'; }); document.getElementById('dPillarBody').innerHTML=h; }
-  function dPlayTrack(f){ if(!f)return; const a=document.getElementById('trackAudio'); a.src=f; a.volume=0.7; a.play().catch(()=>{}); }
+  function dRenderPillarBody(){ const p=PILLARS[dCurPillar]; const items=dCurSeg==='videos'?p.videos:p.music; const isVid=dCurSeg==='videos'; let h=''; items.forEach(it=>{ const tag=it.tag==='free'?'<span class="free">Free</span>':'<span class="lock">Premium</span>'; const mini=(isVid&&it.m!==undefined)?'<span class="rmini"><i style="width:'+it.m+'%"></i></span>':''; let click=''; if(it.tag==='lock')click='onclick="dOpenPremium()"'; else if(!isVid)click='onclick="dPlayTrack(\''+(it.f||'')+'\',\''+it.t.replace(/\x27/g,"")+'\',\''+it.s.replace(/\x27/g,"")+'\')"'; h+='<div class="rowcard" '+click+'><div class="thumb '+(isVid?'vid':'aud')+'">'+(isVid?'▶':'♪')+'</div><div style="flex:1"><div class="r1">'+it.t+' '+tag+'</div><div class="r2">'+it.s+'</div></div>'+mini+'</div>'; }); document.getElementById('dPillarBody').innerHTML=h; }
+  function dPlayTrack(f,t,s){ if(!f)return; const a=document.getElementById('trackAudio'); a.src=f; a.volume=0.7; a.play().catch(()=>{}); const bar=document.getElementById('nowbar'); document.getElementById('npTitle').textContent=t||'Now playing'; document.getElementById('npSub').textContent=s||''; bar.classList.add('show'); bar.classList.remove('paused'); document.getElementById('npPP').textContent='⏸'; }
   function dOpenPremium(){ document.getElementById('dPrem').innerHTML='<div class="dprem-card"><button class="prem-close" style="top:16px;right:16px" onclick="dClosePremium()">✕</button><div class="prem-badge">SATORI DAILY · PREMIUM</div><h2 style="font-size:26px;font-weight:800;margin-bottom:12px">Go all-in on the practice</h2><div class="price"><b>$17</b> / month</div><div class="prem-sub">Everything in free, plus the whole Satori library.</div><ul class="feat" style="margin:0 auto 24px"><li><span class="ico">✓</span> The full library — 80+ practices</li><li><span class="ico">✓</span> Every guided meditation, added weekly</li><li><span class="ico">✓</span> Exclusive music, scored by Craig Young</li><li><span class="ico">✓</span> Personalized path · offline · no ads</li></ul><button class="cta lime wide">Start 7-day free trial</button><div class="prem-note">Then $17/mo · cancel anytime</div><div class="prem-or">— or go deeper —</div><a class="dojo-link" href="https://satorimethod.com" target="_blank" rel="noopener">Join the Qigong Dojo → the full Satori world ↗</a></div>'; document.getElementById('dPrem').classList.add('show'); }
   function dClosePremium(){ document.getElementById('dPrem').classList.remove('show'); }
 </script>
