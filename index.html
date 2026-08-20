@@ -134,6 +134,7 @@
   .nowbar{position:fixed; left:50%; transform:translateX(-50%); width:min(420px, calc(100% - 28px)); bottom:88px; z-index:60; display:none; align-items:center; gap:11px; background:rgba(24,23,31,.96); backdrop-filter:blur(14px); border:1px solid var(--line); border-radius:14px; padding:10px 13px; box-shadow:0 14px 40px -12px rgba(0,0,0,.7);} .nowbar.show{display:flex; animation:fade .3s ease both;}
   .np-pp{color:var(--gold); cursor:pointer; font-size:16px; padding:2px 8px;} .nowbar.paused .np-eq span{animation-play-state:paused; opacity:.5;}
   .mediactl{display:flex; gap:8px; margin-bottom:10px;} .mediactl button{flex:1; background:rgba(24,23,31,.8); border:1px solid var(--line); color:var(--cream); font-size:12.5px; font-weight:600; padding:11px; border-radius:12px; cursor:pointer; backdrop-filter:blur(8px);} .mediactl button:hover{border-color:rgba(166,217,63,.45); color:var(--gold);}
+  .prac-complete{text-align:center; font-size:13px; color:var(--gold); font-weight:600; margin-bottom:6px; animation:fade .4s ease both;}
   .np-eq{display:flex; align-items:flex-end; gap:3px; height:18px; width:22px;} .np-eq span{flex:1; background:var(--gold); border-radius:2px; animation:bounce 1s ease-in-out infinite;} .np-eq span:nth-child(2){animation-delay:.2s;} .np-eq span:nth-child(3){animation-delay:.4s;}
   @keyframes bounce{0%,100%{height:25%;}50%{height:92%;}}
   .np1{font-size:12.5px; font-weight:600;} .np2{font-size:10.5px; color:var(--muted-2);} .np-x{margin-left:auto; color:var(--muted); cursor:pointer; font-size:16px; padding:0 4px;}
@@ -257,7 +258,7 @@
 
     <!-- PRACTICE (selected) -->
     <div class="practice" id="practiceLayer">
-      <video id="pracVideo" playsinline loop preload="metadata"></video>
+      <video id="pracVideo" playsinline preload="metadata"></video>
       <div class="p-scrim-top"></div><div class="p-scrim-bot"></div>
       <div class="s-note" id="pracNote" style="display:none">Guided audio / video plays here</div>
       <div class="prac-top">
@@ -267,9 +268,10 @@
       </div>
       <div class="center-play hidden" id="pracPlay" onclick="pracToggle(event)"><svg width="26" height="26" viewBox="0 0 24 24" fill="#12161f"><path d="M8 5v14l11-7z"/></svg></div>
       <div class="prac-bottom" id="pracBottom" style="display:none">
-        <div class="mediactl"><button onclick="pracRestart()">⟲ Restart</button><button id="pracPP" onclick="pracToggle(event)">⏸ Pause</button></div>
+        <div class="mediactl" id="pracCtl"><button onclick="pracRestart()">⟲ Restart</button><button id="pracPP" onclick="pracToggle(event)">⏸ Pause</button></div>
         <button class="info-btn" onclick="showInfo()">ⓘ Info &amp; cues</button>
-        <button class="cta" onclick="logCurrent()">Log practice</button>
+        <div class="prac-complete" id="pracDone" style="display:none">✓ Practice complete — nicely done.</div>
+        <button class="cta" id="pracLog" onclick="logCurrent()" style="display:none">Log practice</button>
       </div>
 
       <!-- info sheet -->
@@ -495,7 +497,11 @@
     document.getElementById('infoSheet').classList.remove('show');
     const v=document.getElementById('pracVideo');
     document.getElementById('pracBottom').style.display='flex';
-    if(v.currentSrc){ v.play().then(()=>document.getElementById('pracPlay').classList.add('hidden')).catch(()=>document.getElementById('pracPlay').classList.remove('hidden')); }
+    const hasVid=!!v.currentSrc;
+    document.getElementById('pracCtl').style.display=hasVid?'flex':'none';
+    document.getElementById('pracDone').style.display='none';
+    document.getElementById('pracLog').style.display=hasVid?'none':'block';
+    if(hasVid){ v.currentTime=0; v.play().then(()=>document.getElementById('pracPlay').classList.add('hidden')).catch(()=>document.getElementById('pracPlay').classList.remove('hidden')); }
     else { document.getElementById('pracPlay').classList.remove('hidden'); }
   }
   function showInfo(){ document.getElementById('infoSheet').classList.add('show'); }
@@ -562,7 +568,8 @@
     renderFeed(); buildCal();
     const pv=document.getElementById('pracVideo');
     if(pv){ pv.addEventListener('play',()=>{ document.getElementById('pracPlay').classList.add('hidden'); const b=document.getElementById('pracPP'); if(b)b.textContent='⏸ Pause'; });
-      pv.addEventListener('pause',()=>{ document.getElementById('pracPlay').classList.remove('hidden'); const b=document.getElementById('pracPP'); if(b)b.textContent='▶ Play'; }); }
+      pv.addEventListener('pause',()=>{ document.getElementById('pracPlay').classList.remove('hidden'); const b=document.getElementById('pracPP'); if(b)b.textContent='▶ Play'; });
+      pv.addEventListener('ended',()=>{ document.getElementById('pracPlay').classList.remove('hidden'); const b=document.getElementById('pracPP'); if(b)b.textContent='↺ Replay'; const d=document.getElementById('pracDone'); if(d)d.style.display='block'; const lg=document.getElementById('pracLog'); if(lg)lg.style.display='block'; }); }
     const feed=document.getElementById('feed');
     let t; feed.addEventListener('scroll',()=>{ clearTimeout(t); t=setTimeout(onFeedScroll,90); });
     document.addEventListener('keydown',e=>{ if(!document.getElementById('todayLayer').classList.contains('active'))return; if(document.getElementById('practiceLayer').classList.contains('show'))return; if(e.key==='ArrowRight')scrollFeed(1); if(e.key==='ArrowLeft')scrollFeed(-1); });
@@ -658,9 +665,9 @@
   function dPracNav(dir){ curIdx=(curIdx+dir+TODAY.length)%TODAY.length; dRenderPrac(); }
   function dRenderPrac(){
     const p=TODAY[curIdx]; const src=p.vid||p.teaser;
-    const media=src?'<video id="dPracVid" playsinline loop preload="metadata" src="'+src+'"></video><div class="dpc-cplay" id="dPracPlay" onclick="dPracToggle(event)"><svg width="26" height="26" viewBox="0 0 24 24" fill="#12161f"><path d="M8 5v14l11-7z"/></svg></div>':'<div class="dh-poster" style="background:'+p.grad+'"></div><div class="s-note" style="color:var(--muted);top:46%">Guided audio / video plays here</div>';
+    const media=src?'<video id="dPracVid" playsinline preload="metadata" src="'+src+'"></video><div class="dpc-cplay" id="dPracPlay" onclick="dPracToggle(event)"><svg width="26" height="26" viewBox="0 0 24 24" fill="#12161f"><path d="M8 5v14l11-7z"/></svg></div>':'<div class="dh-poster" style="background:'+p.grad+'"></div><div class="s-note" style="color:var(--muted);top:46%">Guided audio / video plays here</div>';
     const cues=p.cues.length?'<ul class="cues" style="background:rgba(24,23,31,.6)">'+p.cues.map((c,n)=>'<li><b>'+(n+1)+'.</b> '+c+'</li>').join('')+'</ul>':'';
-    const logBtn=p.tag==='lock'?'<button class="cta lime" onclick="dOpenPremium()">Unlock with Premium</button>':'<button class="cta" onclick="dLog()">Log practice</button>';
+    const logBtn=p.tag==='lock'?'<button class="cta lime" onclick="dOpenPremium()">Unlock with Premium</button>':'<div class="prac-complete" id="dPracDone" style="display:none">✓ Practice complete</div><button class="cta" id="dPracLog" onclick="dLog()" style="display:'+(src?'none':'block')+'">Log practice</button>';
     document.getElementById('dPrac').innerHTML=
       '<div class="dprac-arrow" onclick="dPracNav(-1)">‹</div>'
       +'<div class="dprac-card"><div class="dpc-video">'+media+'</div>'
@@ -675,6 +682,7 @@
     if(v){ v.muted=false;
       v.addEventListener('play',()=>{ const pb=document.getElementById('dPracPlay'); if(pb)pb.style.display='none'; const b=document.getElementById('dPracPP'); if(b)b.textContent='⏸ Pause'; });
       v.addEventListener('pause',()=>{ const pb=document.getElementById('dPracPlay'); if(pb)pb.style.display='flex'; const b=document.getElementById('dPracPP'); if(b)b.textContent='▶ Play'; });
+      v.addEventListener('ended',()=>{ const pb=document.getElementById('dPracPlay'); if(pb)pb.style.display='flex'; const b=document.getElementById('dPracPP'); if(b)b.textContent='↺ Replay'; const d=document.getElementById('dPracDone'); if(d)d.style.display='block'; const lg=document.getElementById('dPracLog'); if(lg)lg.style.display='block'; });
       v.play().catch(()=>{}); }
   }
   function dPracRestart(){ const v=document.getElementById('dPracVid'); if(!v||!v.currentSrc)return; v.currentTime=0; v.play(); }
