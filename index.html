@@ -160,6 +160,7 @@
   .devtoggle{display:inline-flex; background:var(--navy-1); border:1px solid var(--line); border-radius:999px; padding:4px;}
   .devtoggle button{background:none; border:0; color:var(--muted); font-size:12.5px; font-weight:600; padding:8px 22px; border-radius:999px; cursor:pointer; letter-spacing:.03em;}
   .devtoggle button.on{background:linear-gradient(180deg,var(--gold),var(--gold-soft)); color:var(--navy-0);}
+  .viewtoggle{display:none;}
 
   /* ===== Desktop layout ===== */
   #desktopStage{display:none;}
@@ -301,10 +302,16 @@
     body{display:flex; justify-content:center; align-items:flex-start; padding:30px 20px;}
     #mobileStage{display:none !important;}
     #desktopStage{display:flex !important; width:100%; justify-content:center;}
+    .viewtoggle{display:inline-flex; position:fixed; top:16px; right:18px; z-index:200; background:rgba(16,15,20,.92); border:1px solid var(--line); border-radius:999px; padding:4px; backdrop-filter:blur(6px);}
+    .viewtoggle button{background:none; border:0; color:var(--muted); font-size:12px; font-weight:600; padding:6px 15px; border-radius:999px; cursor:pointer; letter-spacing:.02em;}
+    .viewtoggle button.on{background:linear-gradient(180deg,var(--gold),var(--gold-soft)); color:var(--navy-0);}
+    body.force-mobile #desktopStage{display:none !important;}
+    body.force-mobile #mobileStage{display:block !important; inset:auto; top:24px; left:50%; transform:translateX(-50%); width:390px; height:calc(100vh - 48px); max-height:860px; border-radius:40px; overflow:hidden; border:1px solid var(--line); box-shadow:0 40px 120px -30px rgba(0,0,0,.85); z-index:60;}
   }
 </style>
 </head>
 <body>
+  <div class="viewtoggle" id="viewToggle"><button id="vtDesk" class="on" onclick="setView('desktop')">🖥 Desktop</button><button id="vtMob" onclick="setView('mobile')">📱 Mobile</button></div>
   <div id="mobileStage">
   <div class="phone">
     <div class="notch"></div>
@@ -707,6 +714,14 @@
       k.style.display='none'; m.style.display='block';
       document.querySelectorAll('#desktopStage video').forEach(v=>v.pause());
     }
+  }
+  function setView(v){
+    const mob=v==='mobile';
+    document.body.classList.toggle('force-mobile', mob);
+    document.getElementById('vtDesk').classList.toggle('on', !mob);
+    document.getElementById('vtMob').classList.toggle('on', mob);
+    if(mob){ clearInterval(dHeroTimer); document.querySelectorAll('#desktopStage video').forEach(v=>v.pause()); }
+    else { clearTimeout(promoTimer); document.querySelectorAll('#mobileStage video').forEach(v=>v.pause()); if(dRendered) dGoTo('dToday'); }
   }
   function dChips(a){ return a.map(c=>'<span class="chip">'+c+'</span>').join(''); }
   function dRenderAll(){ dRenderToday(); dRenderLibrary(); dRenderProgress(); dRenderProfile(); }
