@@ -125,7 +125,7 @@
   .pillar.med{background:linear-gradient(160deg,#2a1f3d,#181022);} .pillar.breath{background:linear-gradient(160deg,#1f3a34,#152420);} .pillar.qi{background:linear-gradient(160deg,#3a2a20,#231512);} .pillar.mind{background:linear-gradient(160deg,#3a3324,#231d14);}
   .pillar .p-ic{font-size:20px;} .pillar .p-name{font-size:15px; font-weight:700;} .pillar .p-count{font-size:11px; color:var(--muted-2); margin-top:2px;}
   .rowcard{display:flex; align-items:center; gap:13px; padding:11px; background:var(--navy-2); border:1px solid var(--line); border-radius:14px; margin-bottom:10px; cursor:pointer; transition:.15s;} .rowcard:active{transform:scale(.99);} .rowcard:hover{border-color:rgba(166,217,63,.35);}
-  .thumb{width:54px; height:54px; border-radius:11px; flex-shrink:0; display:flex; align-items:center; justify-content:center; color:#fff; font-size:19px;} .thumb.vid{background:linear-gradient(150deg,#3a2a20,#160f14);} .thumb.aud{background:linear-gradient(150deg,#2a1f3d,#160f14);}
+  .thumb{width:54px; height:54px; border-radius:11px; flex-shrink:0; display:flex; align-items:center; justify-content:center; color:#fff; font-size:19px;} .thumb.vid{background:linear-gradient(150deg,#3a2a20,#160f14);} .thumb.aud{background:linear-gradient(150deg,#2a1f3d,#160f14);} .thumb.art{background-size:cover; background-position:center; color:transparent; box-shadow:inset 0 0 0 1px rgba(255,255,255,.12);}
   .rowcard .r1{font-size:14px; font-weight:600; display:flex; align-items:center; gap:7px;} .rowcard .r2{font-size:12px; color:var(--muted-2); margin-top:2px;}
   .lock{font-size:9px; letter-spacing:.08em; text-transform:uppercase; color:var(--orange); border:1px solid rgba(232,130,60,.4); border-radius:5px; padding:1px 5px;} .free{font-size:9px; letter-spacing:.08em; text-transform:uppercase; color:var(--gold); border:1px solid rgba(166,217,63,.4); border-radius:5px; padding:1px 5px;}
   .rmini{width:30px; height:5px; border-radius:3px; background:rgba(255,255,255,.12); overflow:hidden; margin-left:auto; flex-shrink:0;} .rmini i{display:block; height:100%; background:linear-gradient(90deg,var(--gold),var(--orange));}
@@ -390,9 +390,10 @@
           <div class="pillar mind" onclick="openPillar('mind')"><div class="p-ic">✨</div><div><div class="p-name">Mindset</div><div class="p-count">12 trainings</div></div></div>
         </div>
         <div class="eyebrow2">Just music — for practice</div>
-        <div class="rowcard" onclick="playTrack('State of Grace','Non-guided · Craig Young','state-of-grace.mp3')"><div class="thumb aud">♪</div><div><div class="r1">State of Grace <span class="free">Free</span></div><div class="r2">Non-guided · Craig Young · 7 min</div></div></div>
-        <div class="rowcard" onclick="openPremium()"><div class="thumb aud">♪</div><div><div class="r1">Rise of the Dragons <span class="lock">Premium</span></div><div class="r2">Non-guided · Craig Young · 8 min</div></div></div>
-        <div class="rowcard" onclick="openPremium()"><div class="thumb aud">♪</div><div><div class="r1">Transcendence <span class="lock">Premium</span></div><div class="r2">Non-guided · Craig Young · 10 min</div></div></div>
+        <div class="rowcard" onclick="playTrack('Sacred Presence','Non-guided · 11 min','sacred-presence.mp3')"><div class="thumb aud art" style="background-image:url(sacred-presence.jpg)">♪</div><div><div class="r1">Sacred Presence <span class="free">Free</span></div><div class="r2">Non-guided · 11 min</div></div></div>
+        <div class="rowcard" onclick="playTrack('State of Grace','Non-guided','state-of-grace.mp3')"><div class="thumb aud">♪</div><div><div class="r1">State of Grace <span class="free">Free</span></div><div class="r2">Non-guided · 7 min</div></div></div>
+        <div class="rowcard" onclick="openPremium()"><div class="thumb aud">♪</div><div><div class="r1">Rise of the Dragons <span class="lock">Premium</span></div><div class="r2">Non-guided · 8 min</div></div></div>
+        <div class="rowcard" onclick="openPremium()"><div class="thumb aud">♪</div><div><div class="r1">Transcendence <span class="lock">Premium</span></div><div class="r2">Non-guided · 10 min</div></div></div>
       </div>
     </div>
 
@@ -426,7 +427,7 @@
         <ul class="feat">
           <li><span class="ico">✓</span> The full library — 80+ practices across every pillar</li>
           <li><span class="ico">✓</span> Every guided meditation, new ones added weekly</li>
-          <li><span class="ico">✓</span> Exclusive music — guided &amp; non-guided, scored by Craig Young</li>
+          <li><span class="ico">✓</span> Exclusive original music — guided &amp; non-guided scores</li>
           <li><span class="ico">✓</span> A personalized daily path that adapts to you</li>
           <li><span class="ico">✓</span> Offline practice, no ads, ever</li>
         </ul>
@@ -475,7 +476,7 @@
   </div>
 
 
-  <div class="nowbar" id="nowbar"><div class="np-eq"><span></span><span></span><span></span></div><div style="flex:1;min-width:0"><div class="np1" id="npTitle">State of Grace</div><div class="np2" id="npSub">Non-guided · Craig Young</div></div><div class="np-pp" id="npPP" onclick="npToggle()">⏸</div><div class="np-x" onclick="stopTrack()">✕</div></div>
+  <div class="nowbar" id="nowbar"><div class="np-eq"><span></span><span></span><span></span></div><div style="flex:1;min-width:0"><div class="np1" id="npTitle">State of Grace</div><div class="np2" id="npSub">Non-guided</div></div><div class="np-pp" id="npPP" onclick="npToggle()">⏸</div><div class="np-x" onclick="stopTrack()">✕</div></div>
   <audio id="trackAudio" preload="none"></audio>
   <div class="celebrate" id="celebrate"></div>
 
@@ -652,13 +653,13 @@
 
   const PILLARS={
     qi:{title:'Qigong', videos:[{t:'Dragon Wings',s:'Breath · 1 min',tag:'free',m:50},{t:'Rooting — Standing Like a Tree',s:'Balance · 4 min',tag:'lock',m:25},{t:'Cloud Hands',s:'Flow · 3 min',tag:'lock',m:0}],
-      music:[{t:'Rise of the Dragons',s:'Non-guided · Craig Young · 8 min',tag:'free',f:'rise-of-the-dragons.mp3'},{t:'Timeless Dream',s:'Non-guided · Craig Young · 6 min',tag:'lock',f:'timeless-dream.mp3'}]},
+      music:[{t:'Rise of the Dragons',s:'Non-guided · 8 min',tag:'free',f:'rise-of-the-dragons.mp3'},{t:'Timeless Dream',s:'Non-guided · 6 min',tag:'lock',f:'timeless-dream.mp3'}]},
     breath:{title:'Breath', videos:[{t:'Calm in Five Breaths',s:'Downshift · 5 min',tag:'free',m:75},{t:'Ocean Breath',s:'Energy · 4 min',tag:'lock',m:0}],
-      music:[{t:'Transcendence (Breath Mix)',s:'Non-guided · Craig Young · 10 min',tag:'lock',f:'transcendence.mp3'}]},
+      music:[{t:'Transcendence (Breath Mix)',s:'Non-guided · 10 min',tag:'lock',f:'transcendence.mp3'}]},
     med:{title:'Meditation', videos:[{t:'Morning Coherence',s:'Guided · Tristan · 8 min',tag:'free',m:50},{t:'Evening Wind-Down',s:'Guided · Tristan · 10 min',tag:'lock',m:0},{t:'Body Scan Reset',s:'Guided · Tristan · 12 min',tag:'lock',m:0}],
-      music:[{t:'State of Grace',s:'Non-guided · Craig Young · 7 min',tag:'free',f:'state-of-grace.mp3'}]},
+      music:[{t:'Sacred Presence',s:'Non-guided · 11 min',tag:'free',f:'sacred-presence.mp3'},{t:'State of Grace',s:'Non-guided · 7 min',tag:'free',f:'state-of-grace.mp3'}]},
     mind:{title:'Mindset', videos:[{t:'Reframe the Day',s:'Training · 6 min',tag:'free',m:0},{t:'Vital Energy Priming',s:'Training · 7 min',tag:'lock',m:0}],
-      music:[{t:'Timeless Dream',s:'Non-guided · Craig Young · 6 min',tag:'lock',f:'timeless-dream.mp3'}]}
+      music:[{t:'Timeless Dream',s:'Non-guided · 6 min',tag:'lock',f:'timeless-dream.mp3'}]}
   };
   let curPillar='qi', curSeg='videos';
   function openPillar(key){ curPillar=key; curSeg='videos'; document.getElementById('pillarTitle').textContent=PILLARS[key].title; document.querySelectorAll('#segRow .seg').forEach((s,i)=>s.classList.toggle('on',i===0)); renderPillar(); go2('pillarLayer'); }
@@ -738,7 +739,7 @@
     let h='<div class="dhead">Library</div><div class="dtitle">Practice by outcome</div><div class="dpillars">';
     [['qi','🐉','Qigong','31 moves · 6 tracks'],['breath','🌬️','Breath','18 practices'],['med','🌙','Meditation','24 guided'],['mind','✨','Mindset','12 trainings']].forEach(x=>{ h+='<div class="pillar '+x[0]+'" onclick="dOpenPillar(\''+x[0]+'\')"><div class="p-ic">'+x[1]+'</div><div><div class="p-name">'+x[2]+'</div><div class="p-count">'+x[3]+'</div></div></div>'; });
     h+='</div><div class="dhead" style="color:var(--sage)">Just music — for practice</div>';
-    h+=dMusicRow('State of Grace','Non-guided · Craig Young · 7 min','free','state-of-grace.mp3')+dMusicRow('Rise of the Dragons','Non-guided · Craig Young · 8 min','lock','')+dMusicRow('Transcendence','Non-guided · Craig Young · 10 min','lock','');
+    h+=dMusicRow('Sacred Presence','Non-guided · 11 min','free','sacred-presence.mp3')+dMusicRow('State of Grace','Non-guided · 7 min','free','state-of-grace.mp3')+dMusicRow('Rise of the Dragons','Non-guided · 8 min','lock','')+dMusicRow('Transcendence','Non-guided · 10 min','lock','');
     document.getElementById('dLibrary').innerHTML=h;
   }
   function dMusicRow(t,s,tag,f){ const tg=tag==='free'?'<span class="free">Free</span>':'<span class="lock">Premium</span>'; const click=tag==='lock'?'dOpenPremium()':'dPlayTrack(\''+f+'\',\''+t.replace(/\x27/g,"")+'\',\''+s.replace(/\x27/g,"")+'\')'; return '<div class="rowcard" style="max-width:540px" onclick="'+click+'"><div class="thumb aud">♪</div><div><div class="r1">'+t+' '+tg+'</div><div class="r2">'+s+'</div></div></div>'; }
@@ -900,7 +901,7 @@
   function dSeg(seg,el){ dCurSeg=seg; document.querySelectorAll('#dPillar .seg').forEach(s=>s.classList.remove('on')); el.classList.add('on'); dRenderPillarBody(); }
   function dRenderPillarBody(){ const p=PILLARS[dCurPillar]; const items=dCurSeg==='videos'?p.videos:p.music; const isVid=dCurSeg==='videos'; let h=''; items.forEach(it=>{ const tag=it.tag==='free'?'<span class="free">Free</span>':'<span class="lock">Premium</span>'; const mini=(isVid&&it.m!==undefined)?'<span class="rmini"><i style="width:'+it.m+'%"></i></span>':''; let click=''; if(it.tag==='lock')click='onclick="dOpenPremium()"'; else if(!isVid)click='onclick="dPlayTrack(\''+(it.f||'')+'\',\''+it.t.replace(/\x27/g,"")+'\',\''+it.s.replace(/\x27/g,"")+'\')"'; h+='<div class="rowcard" '+click+'><div class="thumb '+(isVid?'vid':'aud')+'">'+(isVid?'▶':'♪')+'</div><div style="flex:1"><div class="r1">'+it.t+' '+tag+'</div><div class="r2">'+it.s+'</div></div>'+mini+'</div>'; }); document.getElementById('dPillarBody').innerHTML=h; }
   function dPlayTrack(f,t,s){ if(!f)return; const a=document.getElementById('trackAudio'); a.src=f; a.volume=0.7; a.play().catch(()=>{}); const bar=document.getElementById('nowbar'); document.getElementById('npTitle').textContent=t||'Now playing'; document.getElementById('npSub').textContent=s||''; bar.classList.add('show'); bar.classList.remove('paused'); document.getElementById('npPP').textContent='⏸'; }
-  function dOpenPremium(){ document.getElementById('dPrem').innerHTML='<div class="dprem-card"><button class="prem-close" style="top:16px;right:16px" onclick="dClosePremium()">✕</button><div class="prem-badge">SATORI DAILY · PREMIUM</div><h2 style="font-size:26px;font-weight:800;margin-bottom:12px">Go all-in on the practice</h2><div class="price"><b>$17</b> / month</div><div class="prem-sub">Everything in free, plus the whole Satori library.</div><ul class="feat" style="margin:0 auto 24px"><li><span class="ico">✓</span> The full library — 80+ practices</li><li><span class="ico">✓</span> Every guided meditation, added weekly</li><li><span class="ico">✓</span> Exclusive music, scored by Craig Young</li><li><span class="ico">✓</span> Personalized path · offline · no ads</li></ul><button class="cta lime wide">Start 7-day free trial</button><div class="prem-note">Then $17/mo · cancel anytime</div><div class="prem-or">— or go deeper —</div><a class="dojo-link" href="https://satorimethod.com" target="_blank" rel="noopener">Join the Qigong Dojo → the full Satori world ↗</a></div>'; document.getElementById('dPrem').classList.add('show'); }
+  function dOpenPremium(){ document.getElementById('dPrem').innerHTML='<div class="dprem-card"><button class="prem-close" style="top:16px;right:16px" onclick="dClosePremium()">✕</button><div class="prem-badge">SATORI DAILY · PREMIUM</div><h2 style="font-size:26px;font-weight:800;margin-bottom:12px">Go all-in on the practice</h2><div class="price"><b>$17</b> / month</div><div class="prem-sub">Everything in free, plus the whole Satori library.</div><ul class="feat" style="margin:0 auto 24px"><li><span class="ico">✓</span> The full library — 80+ practices</li><li><span class="ico">✓</span> Every guided meditation, added weekly</li><li><span class="ico">✓</span> Exclusive original music, guided &amp; non-guided</li><li><span class="ico">✓</span> Personalized path · offline · no ads</li></ul><button class="cta lime wide">Start 7-day free trial</button><div class="prem-note">Then $17/mo · cancel anytime</div><div class="prem-or">— or go deeper —</div><a class="dojo-link" href="https://satorimethod.com" target="_blank" rel="noopener">Join the Qigong Dojo → the full Satori world ↗</a></div>'; document.getElementById('dPrem').classList.add('show'); }
   function dClosePremium(){ document.getElementById('dPrem').classList.remove('show'); }
 </script>
 </body>
